@@ -43,6 +43,7 @@
             
             @include('layouts.topbar')
             <div class="main-content p-2">
+                @include('layouts.flash-message')
                 <main>
                     {{ $slot }}
                 </main>
@@ -66,6 +67,7 @@
     </div>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
+    <script src="{{ asset('js/jquery-3.6.1.min.js') }}"></script>
     <script>
         function toggleMenu() {
             let toggle = document.querySelector(".toggle");
@@ -76,6 +78,7 @@
             main.classList.toggle('active');
         }
     </script>
+    @stack('scripts')
 </body>
 
 </html>
