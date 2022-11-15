@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="title">
-        Roles
+        Create Role
     </x-slot>
     <div class="row">
         <div class="col-md-12">
@@ -15,7 +15,7 @@
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
                                     <li class="breadcrumb-item"><a href="{{ url('roles') }}">Role</a></li>
-                                    <li class="breadcrumb-item active" aria-current="page">Create</li>
+                                    <li class="breadcrumb-item " aria-current="page">Create</li>
                                 </ol>
                             </nav>
                         </div>
@@ -65,9 +65,9 @@
                                                     @foreach ($groupWisePermissions as $index => $permission)
                                                         <li
                                                             class="@php echo ($index+1<$permissinCount) ? 'border-bottom':'' @endphp  p-2">
-                                                            <label class="checkbox single-permission per-{{ $permission_group->group_name}}" onclick="checkUncheckModuleByPermission('per-{{$permission_group->group_name}}', '{{ $permission_group->group_name}}', {{count($permissions)}})">
-                                                                <input type="checkbox"  value="{{ $permission->name}}" name="permission[]" id="permission{{ $permission->id}}">
-                                                                {{ $permission->name }}
+                                                            <label class="checkbox single-permission per-{{ $permission_group->group_name}}" onclick="checkUncheckModuleByPermission('per-{{$permission_group->group_name}}', '{{ $permission_group->group_name}}', {{count($groupWisePermissions)}})">
+                                                                <input type="checkbox"  value="{{$permission->name}}" name="permission[]" id="permission{{ $permission->id}}">
+                                                                {{ ucwords(str_replace('.',' ',$permission->name)) }}
                                                             </label>
                                                         </li>
                                                     @endforeach

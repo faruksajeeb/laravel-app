@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
@@ -49,10 +50,10 @@ class RoleController extends Controller
     public function create()
     {
         $permissions = Permission::all();
-        $permission_groups =Permission::select('group_name')->groupBy('group_name')->get();
+        $permission_groups = Permission::select('group_name')->groupBy('group_name')->get();
         return view('roles.create', [
             'permissions' => $permissions,
-            'permission_groups' => $permission_groups, 
+            'permission_groups' => $permission_groups,
         ]);
     }
 
@@ -64,7 +65,7 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $validatedData = $request->validate(
             [
                 'name' => 'required|regex:/^[a-zA-Z ]+$/u|min:3|max:20|unique:roles',
@@ -80,8 +81,8 @@ class RoleController extends Controller
         $data = array(
             'name' => $request->name
         );
-        
-        $result = $this->roles->create($data); 
+
+        $result = $this->roles->create($data);
         if ($result) {
             Session::flash('success', 'Role Inserted Successfully.');
         } else {
@@ -109,7 +110,15 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
-        //
+        $id = Crypt::decryptString($id);
+        $roleInfo = $this->roles->findById($id);
+        $permissions = Permission::all();
+        $permission_groups = Permission::select('group_name')->groupBy('group_name')->get();
+        return view('roles.edit', [
+            'roleInfo' => $roleInfo,
+            'permissions' => $permissions,
+            'permission_groups' => $permission_groups,
+        ]);
     }
 
     /**
@@ -121,7 +130,32 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $id = Crypt::decryptString($id);
+        $validatedData = $request->validate(
+            [
+                'name' => 'required|regex:/^[a-zA-Z ]+$/u|min:3|max:20|unique:roles,name,' . $id
+            ],
+            [
+                'name.required' => 'Role Name field is required.',
+                'name.unique' =>  '"'.$request->name.'" The role name has already been taken.',
+                'name.regex' => 'The role name format is invalid. Please enter alpabatic text.',
+                'name.min' => 'The role name must be at least 3 characters.',
+                'name.max' => 'The role name may not be greater than 20 characters.'
+            ]
+        );
+        $role = $this->roles->findById($id);
+        $permissions = $request->input('permissions');
+        if(!empty($permissions)){
+            $role->syncPermissions($permissions);
+        }
+        $role->name = $request->name; 
+        $result = $role->save();
+        if ($result) {
+            Session::flash('success', 'Role Updated Successfully.');
+        } else {
+            Session::flash('error', 'Role not Updated!');
+        }
+        return redirect()->back();
     }
 
     /**
@@ -132,6 +166,16 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $id = Crypt::decryptString($id);
+        $role = $this->roles->findById($id);
+        if(!is_null($role)){
+            $result = $role->delete();
+        }
+        if ($result) {
+            Session::flash('success', 'Role deleted Successfully.');
+        } else {
+            Session::flash('error', 'Role not deleted!');
+        }
+        return back();
     }
 }

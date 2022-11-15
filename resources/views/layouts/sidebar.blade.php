@@ -25,10 +25,16 @@
                         </a>
                     </li>
                 @endforeach
-                <li>
-                    <a href="">
-                        <span class="icon"><i class="fa-solid fa-house"></i></span>
-                        <span class="title">Dashboard </span>
+                <li class="{{ Route::is('users.index') || Route::is('users.create') || Route::is('users.edit') ? 'active' : ''}}">
+                    <a href="{{url('users')}}" >
+                        <span class="icon"><i class="fa-solid fa-users "></i></span>
+                        <span class="title">Users </span>
+                    </a>
+                </li>
+                <li class="{{ Route::is('roles.index') || Route::is('roles.create') || Route::is('roles.edit') ? 'active' : ''}}">
+                    <a href="{{url('roles')}}" >
+                        <span class="icon"><i class="fa-solid fa-key "></i></span>
+                        <span class="title">Role & Permissions </span>
                     </a>
                 </li>
                 <li>

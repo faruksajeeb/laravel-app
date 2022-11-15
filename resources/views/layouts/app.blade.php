@@ -5,6 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
 
     <title>{{ config('app.name', 'Laravel') }} | {{ $title }}</title>
 
@@ -18,7 +21,8 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" type="text/css"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
-    <style>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
         .themed-grid-col {
             padding-top: 1rem;
             padding-bottom: 1rem;
@@ -36,11 +40,9 @@
 </head>
 
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
-        
+    <div class="min-h-screen bg-gray-100">        
         @include('layouts.sidebar')
-        <section id="main" class="main">
-            
+        <section id="main" class="main">            
             @include('layouts.topbar')
             <div class="main-content p-2">
                 @include('layouts.flash-message')
@@ -68,7 +70,12 @@
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('js/popper.min.js') }}"></script>
     <script src="{{ asset('js/jquery-3.6.1.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    
     <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
         function toggleMenu() {
             let toggle = document.querySelector(".toggle");
             let navigation = document.querySelector(".navigation");

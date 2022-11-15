@@ -40,7 +40,9 @@ class RolePermissionSeeder extends Seeder
                     'user.create',
                     'user.edit',
                     'user.view',
-                    'user.delete'
+                    'user.delete',
+                    'user.import',
+                    'user.export'
                 ]
             ],
             [

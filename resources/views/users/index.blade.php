@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="title">
-        Roles
+        Users
     </x-slot>
     <div class="row">
         <div class="col-md-12">
@@ -8,13 +8,13 @@
                 <div class="card-header bg-white">
                     <div class="row">
                         <div class="col-md-8">
-                            <h3 class="card-title py-1"><i class="fa fa-list"></i> Roles</h3>
+                            <h3 class="card-title py-1"><i class="fa fa-list"></i> Users</h3>
                         </div>
                         <div class="col-md-4">
                             <nav aria-label="breadcrumb" class="float-end">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-                                    <li class="breadcrumb-item " aria-current="page">Roles</li>
+                                    <li class="breadcrumb-item " aria-current="page">Users</li>
                                 </ol>
                             </nav>
                         </div>
@@ -53,7 +53,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
-                                    <a href="{{ route('roles.create') }}"
+                                    <a href="{{ route('users.create') }}"
                                         class="btn btn-xs btn-outline-primary float-end" name="create_new"
                                         type="button">
                                         <i class="fa-solid fa-plus"></i> Create New
@@ -67,33 +67,37 @@
                                 <tr>
                                     <th>Sl No.</th>
                                     <th>Name</th>
-                                    <th>Permissions</th>
-                                    <th>Guard Name</th>
+                                    <th>Email</th>
+                                    <th>Roles</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($roles as $key => $val)
+                                @foreach ($users as $key => $val)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $val->name }}</td>
-                                        <td width="30%">
-                                             @foreach ($val->permissions as $permission)
-                                                <span class="badge bg-info text-dark">{{ $permission->name }}</span>
-                                                    {{-- <br /> --}}
+                                        <td>{{ $val->email }}</td>
+                                        <td>
+                                            @foreach ($val->roles as $role)
+                                                <span class="badge bg-info text-dark">{{ $role->name }}</span>
+                                                {{-- <br /> --}}
                                             @endforeach
                                         </td>
-                                        <td>{{ $val->guard_name }}</td>
                                         <td>{{ $val->created_at }}</td>
                                         <td>{{ $val->updated_at }}</td>
                                         <td>
-                                            <a href="{{ route('roles.edit', Crypt::encryptString($val->id)) }}"
+                                            <a href="{{ route('users.edit', Crypt::encryptString($val->id)) }}"
                                                 class="btn btn-outline-warning"><i class="fa-solid fa-pencil"></i></a>
-                                            <a href="{{ route('roles.destroy', Crypt::encryptString($val->id)) }}"
-                                                class="btn btn-outline-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{$val->id}}').submit();"><i class="fa-solid fa-remove"></i></a>
-                                            <form id="delete-form-{{$val->id}}" action="{{route('roles.destroy',Crypt::encryptString($val->id))}}" method="POST">
+                                            <a href="{{ route('users.destroy', Crypt::encryptString($val->id)) }}"
+                                                class="btn btn-outline-danger"
+                                                onclick="event.preventDefault(); document.getElementById('delete-form-{{ $val->id }}').submit();"><i
+                                                    class="fa-solid fa-remove"></i></a>
+                                            <form id="delete-form-{{ $val->id }}"
+                                                action="{{ route('users.destroy', Crypt::encryptString($val->id)) }}"
+                                                method="POST">
                                                 @method('DELETE')
                                                 @csrf
                                             </form>
@@ -102,7 +106,7 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{ $roles->links() }}
+                        {{ $users->links() }}
                     </div>
                 </div>
             </div>
