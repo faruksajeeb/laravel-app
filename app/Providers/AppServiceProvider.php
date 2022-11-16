@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Models\Mrpermission;
+use Spatie\Permission\Models\Permission;
 
 
 class AppServiceProvider extends ServiceProvider
@@ -25,8 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $data = Mrpermission::where('status', 1)->get();
+        // $data = Mrpermission::where('status', 1)->get();
+        $data = Permission::select('group_name')->where(['status'=>1,'guard_name'=>'web','is_menu'=>'yes'])->groupBy('group_name')->get();
 
-        view()->share('menus', $data);
+        view()->share('menu_groups', $data);
     }
 }

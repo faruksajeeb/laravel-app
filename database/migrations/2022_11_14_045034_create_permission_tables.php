@@ -30,6 +30,12 @@ class CreatePermissionTables extends Migration
             $table->string('name');       // For MySQL 8.0 use string('name', 125);
             $table->string('guard_name'); // For MySQL 8.0 use string('guard_name', 125);
             $table->string('group_name')->nullable(); // For MySQL 8.0 use string('group_name', 125);
+            $table->enum('is_menu', ['yes', 'no'])->default('no');
+            $table->string('menu_name')->nullable();
+            $table->integer('parent_id')->nullable();
+            $table->string('icon')->nullable();
+            $table->tinyInteger('status')->default(1);
+            $table->integer('sl_order')->nullable();
             $table->timestamps();
 
             $table->unique(['name', 'guard_name']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Lib\Webspice;
 use Illuminate\Http\Request;
 use App\Models\User;
 use DB;
@@ -17,12 +18,14 @@ class UserController extends Controller
      * The user repository instance.
      */
     public $user;
+    public $tableName;
     protected $users;
 
     public function __construct(User $users)
     {
+        $this->tableName = 'users';
         $this->middleware(function($request, $next){
-           //$this->user = Auth::user();
+        //    $this->user = Auth::user();
             $this->user = Auth::guard('web')->user();
             return $next($request);
         });
@@ -35,9 +38,13 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        // if(is_null($this->users) || !$this->users->can('user.view')){
-        //     abort(403, 'SORRY! You are unauthorized to access user list!');
-        // }
+       
+        #permission verfy
+        if(is_null($this->user) || !$this->user->can('user.view')){
+            abort(403, 'SORRY! You are unauthorized to access user list!');
+        }
+       
+        # Query Start
         $query = $this->users->orderBy('created_at', 'desc');
         if ($request->search_status != null) {
             $query->where('status', $request->search_status);
@@ -51,6 +58,7 @@ class UserController extends Controller
             });
         }
         $users = $query->paginate(10);
+        #Query End
         return view('users.index', compact('users'));
     }
 
@@ -63,13 +71,13 @@ class UserController extends Controller
      */
     public function create()
     {
-        // if(is_null($this->user) || !$this->user->can('user.create')){
-        //     abort(403, 'SORRY! You are unauthorized to create new user!');
-        // }
+        #permission verfy
+        if(is_null($this->user) || !$this->user->can('user.create')){
+            abort(403, 'SORRY! You are unauthorized to create user!');
+        }
+
         $roles = Role::all();
-        return view('users.create',[
-            'roles' => $roles
-        ]);
+        return view('users.create',compact('roles'));
     }
 
     /**
@@ -80,9 +88,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        // if(is_null($this->users) || !$this->users->can('user.create')){
-        //     abort(403, 'SORRY! You are unauthorized to create new user!');
-        // }
+        #permission verfy
+        if(is_null($this->user) || !$this->user->can('user.create')){
+            abort(403, 'SORRY! You are unauthorized to create user!');
+        }
+
         $request->validate(
             [
                  'name' =>'required|regex:/^[a-zA-Z ]+$/u|min:3|max:20',
@@ -97,8 +107,9 @@ class UserController extends Controller
                 'name.max' => 'The User name may not be greater than 20 characters.'
             ]
         );
-        $result = $this->users->insertUser($request);  
-        if($result){
+        $insertId = $this->users->insertUser($request);  
+        if($insertId){
+            Webspice::log($this->tableName, $insertId, "Data Created successfully!");
             Session::flash('success', 'User Created Successfully.');
         }else{
             Session::flash('error', 'User not created!');
@@ -114,7 +125,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        #permission verify
+        if(is_null($this->users) || !$this->users->can('user.view')){
+            abort(403, 'SORRY! You are unauthorized to show user!');
+        }
     }
 
     /**
@@ -125,9 +139,10 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        // if(is_null($this->users) || !$this->users->can('user.edit')){
-        //     abort(403, 'SORRY! You are unauthorized to edit user!');
-        // }
+        #permission verify
+        if(is_null($this->users) || !$this->users->can('user.edit')){
+            abort(403, 'SORRY! You are unauthorized to edit user!');
+        }
         $id = Crypt::decryptString($id);
         $user = $this->users->find($id);        
         $roles = Role::all();
@@ -146,9 +161,11 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // if(is_null($this->users) || !$this->users->can('user.edit')){
-        //     abort(403, 'SORRY! You are unauthorized to edit user!');
-        // }
+        #permission verify
+        if(is_null($this->users) || !$this->users->can('user.edit')){
+            abort(403, 'SORRY! You are unauthorized to edit user!');
+        }
+
         $id = Crypt::decryptString($id);
         $user = $this->users->find($id);
         $request->validate(
@@ -183,9 +200,11 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        // if(is_null($this->user) || !$this->user->can('user.delete')){
-        //     abort(403, 'SORRY! You are unauthorized to delete user!');
-        // }
+        #permission verify
+        if(is_null($this->user) || !$this->user->can('user.delete')){
+            abort(403, 'SORRY! You are unauthorized to delete user!');
+        }
+
         $id = Crypt::decryptString($id);
         $user = $this->users->find($id);
         if(!is_null($user)){

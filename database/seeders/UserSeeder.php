@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -23,6 +24,14 @@ class UserSeeder extends Seeder
             $user->email = "ofsajeeb@gmail.com";
             $user->password = Hash::make("12345678");
             $user->save();
+
+            DB::table('model_has_roles')->insert(
+                array(
+                    'role_id' => 1,
+                    'model_type' => 'App\Models\User',
+                    'model_id' => $user->id
+                    )
+            );
         }
     }
 }

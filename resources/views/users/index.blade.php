@@ -2,6 +2,9 @@
     <x-slot name="title">
         Users
     </x-slot>
+    @php
+        $loggedUser = Auth::guard('web')->user();
+    @endphp
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -45,19 +48,23 @@
                                                 value="search">
                                                 <i class="fa fa-search"></i> Search
                                             </button>
-                                            <button class="btn btn-xs btn-success float-end" name="submit_btn"
-                                                value="export" type="submit">
-                                                <i class="fa-solid fa-download"></i> Export
-                                            </button>
+                                            @if($loggedUser && $loggedUser->can('user.export'))
+                                                <button class="btn btn-xs btn-success float-end" name="submit_btn"
+                                                    value="export" type="submit">
+                                                    <i class="fa-solid fa-download"></i> Export
+                                                </button>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-3 col-sm-12">
-                                    <a href="{{ route('users.create') }}"
-                                        class="btn btn-xs btn-outline-primary float-end" name="create_new"
-                                        type="button">
-                                        <i class="fa-solid fa-plus"></i> Create New
-                                    </a>
+                                    @if($loggedUser && $loggedUser->can('user.create'))
+                                        <a href="{{ route('users.create') }}"
+                                            class="btn btn-xs btn-outline-primary float-end" name="create_new"
+                                            type="button">
+                                            <i class="fa-solid fa-plus"></i> Create New
+                                        </a>
+                                    @endif
                                 </div>
 
                             </div>
@@ -89,18 +96,26 @@
                                         <td>{{ $val->created_at }}</td>
                                         <td>{{ $val->updated_at }}</td>
                                         <td>
-                                            <a href="{{ route('users.edit', Crypt::encryptString($val->id)) }}"
-                                                class="btn btn-outline-warning"><i class="fa-solid fa-pencil"></i></a>
-                                            <a href="{{ route('users.destroy', Crypt::encryptString($val->id)) }}"
-                                                class="btn btn-outline-danger"
-                                                onclick="event.preventDefault(); document.getElementById('delete-form-{{ $val->id }}').submit();"><i
-                                                    class="fa-solid fa-remove"></i></a>
-                                            <form id="delete-form-{{ $val->id }}"
-                                                action="{{ route('users.destroy', Crypt::encryptString($val->id)) }}"
-                                                method="POST">
-                                                @method('DELETE')
-                                                @csrf
-                                            </form>
+
+                                            @if($loggedUser && $loggedUser->can('user.edit'))
+                                                <a href="{{ route('users.edit', Crypt::encryptString($val->id)) }}"
+                                                    class="btn btn-outline-warning"><i
+                                                        class="fa-solid fa-pencil"></i></a>
+                                            @endif
+
+                                            @if($loggedUser && $loggedUser->can('user.delete'))
+                                                <a href="{{ route('users.destroy', Crypt::encryptString($val->id)) }}"
+                                                    class="btn btn-outline-danger"
+                                                    onclick="event.preventDefault(); document.getElementById('delete-form-{{ $val->id }}').submit();"><i
+                                                        class="fa-solid fa-remove"></i></a>
+                                                <form id="delete-form-{{ $val->id }}"
+                                                    action="{{ route('users.destroy', Crypt::encryptString($val->id)) }}"
+                                                    method="POST">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                </form>
+                                            @endif
+
                                         </td>
                                     </tr>
                                 @endforeach

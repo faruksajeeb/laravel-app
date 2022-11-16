@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -64,7 +65,7 @@ class User extends Authenticatable
         if($request->roles){
             $user->assignRole($request->roles);
         }
-        return true;
+        return $user->id; // return insert id
     }
     public static function updateUser($request,$id){
         $user = User::find($id);
@@ -79,5 +80,9 @@ class User extends Authenticatable
             $user->assignRole($request->roles);
         }
         return true;
+    }
+
+    public static function menuByGroupName($groupName){
+        return DB::table('permissions')->where('group_name',$groupName)->get();
     }
 }
