@@ -10,6 +10,7 @@ use Illuminate\Contracts\Session\Session as SessionSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Session;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -77,7 +78,10 @@ class UserController extends Controller
         }
 
         $roles = Role::all();
-        return view('users.create',compact('roles'));
+        $permissions = Permission::all();
+        $permission_groups = Permission::select('group_name')->groupBy('group_name')->get();
+        
+        return view('users.create',compact('roles','permissions','permission_groups'));
     }
 
     /**
@@ -108,6 +112,12 @@ class UserController extends Controller
             ]
         );
         $insertId = $this->users->insertUser($request);  
+        $permissions = $request->permissions;
+        if(!empty($permissions)){
+            for ($i = 0; $i < count($permissions); $i++) {
+                $insertId->givePermissionTo($permissions[$i]);
+            }
+        }
         if($insertId){
             Webspice::log($this->tableName, $insertId, "Data Created successfully!");
             Session::flash('success', 'User Created Successfully.');
@@ -140,15 +150,20 @@ class UserController extends Controller
     public function edit($id)
     {
         #permission verify
-        if(is_null($this->users) || !$this->users->can('user.edit')){
+        if(is_null($this->user) || !$this->user->can('user.edit')){
             abort(403, 'SORRY! You are unauthorized to edit user!');
         }
         $id = Crypt::decryptString($id);
         $user = $this->users->find($id);        
         $roles = Role::all();
+        $permissions = Permission::all();
+        $permission_groups = Permission::select('group_name')->groupBy('group_name')->get();
+        
         return view('users.edit',[
             'user' => $user,
-            'roles' => $roles
+            'roles' => $roles,
+            'permissions' => $permissions,
+            'permission_groups' => $permission_groups
         ]);
     }
 
@@ -162,7 +177,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         #permission verify
-        if(is_null($this->users) || !$this->users->can('user.edit')){
+        if(is_null($this->user) || !$this->user->can('user.edit')){
             abort(403, 'SORRY! You are unauthorized to edit user!');
         }
 
@@ -183,6 +198,10 @@ class UserController extends Controller
             ]
         );
         $result = $this->users->updateUser($request,$id);  
+        $permissions = $request->permissions;        
+        if(!empty($permissions)){            
+            $user->syncPermissions($permissions);
+        }
         if($result){
             Session::flash('success', 'User has been updated successfully.');
         }else{
@@ -216,5 +235,13 @@ class UserController extends Controller
             Session::flash('error', 'User not deleted!');
         }        
         return redirect()->back();
+    }
+
+    public function changePassword(){
+
+    }
+
+    public function userProfile(){
+        
     }
 }

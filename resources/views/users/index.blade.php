@@ -76,6 +76,7 @@
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Roles</th>
+                                    <th>Permissions</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th>Action</th>
@@ -92,6 +93,18 @@
                                                 <span class="badge bg-info text-dark">{{ $role->name }}</span>
                                                 {{-- <br /> --}}
                                             @endforeach
+                                           
+                                        </td>
+                                        <td width="30%">
+                                            * User can access assigned role permissions. <br/>
+                                            @if (count($val->permissions)>0)
+                                                and also access below permissions too.
+                                                @foreach ($val->permissions as $permission)
+                                                <span class="badge bg-info text-dark">{{ $permission->name }}</span>
+                                                {{-- <br /> --}}
+                                            @endforeach
+                                            <br/>
+                                            @endif
                                         </td>
                                         <td>{{ $val->created_at }}</td>
                                         <td>{{ $val->updated_at }}</td>

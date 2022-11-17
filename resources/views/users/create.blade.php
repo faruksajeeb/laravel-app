@@ -52,9 +52,12 @@
                                 </div>
                             </div>
                             <div class="col-md-7">
-                                {{-- <div class="form-group">
+                                <div class="form-group">
                                     <label for="" class="fw-bolder">User Permissions</label>
                                     <br>
+                                    * User can access assigned role permissions.
+                                        and If needed extra permission, please checked your desire permission from below list & save.
+                                        <br/>
                                     <label class="checkbox select-all-permission">
                                         <input type="checkbox" name="permission_all" id="permission_all">
                                         All
@@ -86,7 +89,7 @@
                                                         <li
                                                             class="@php echo ($index+1<$permissinCount) ? 'border-bottom':'' @endphp  p-2">
                                                             <label class="checkbox single-permission per-{{ $permission_group->group_name}}" onclick="checkUncheckModuleByPermission('per-{{$permission_group->group_name}}', '{{ $permission_group->group_name}}', {{count($groupWisePermissions)}})">
-                                                                <input type="checkbox"  value="{{$permission->name}}" name="permission[]" id="permission{{ $permission->id}}">
+                                                                <input type="checkbox"  value="{{$permission->name}}" name="permissions[]" id="permission{{ $permission->id}}">
                                                                 {{ ucwords(str_replace('.',' ',$permission->name)) }}
                                                             </label>
                                                         </li>
@@ -97,7 +100,7 @@
                                         </div>
                                         @php echo ($groupIndex+1<count($permission_groups)) ? '<hr>':'' @endphp
                                     @endforeach
-                                </div> --}}
+                                </div>
                             </div>
                         </div>
 
@@ -112,10 +115,50 @@
     </div>
     @push('scripts')
         <script>
-            $(function() {
-
+             $(function() {
+                allChecked();
             });
-       
+            $('.select-all-permission input').on('click', function() {
+                if ($(this).is(':checked')) {
+                    $(".group-permission input").prop("checked", true);
+                    $(".single-permission input").prop("checked", true);
+                } else {
+                    $(".group-permission input").prop("checked", false);
+                    $(".single-permission input").prop("checked", false);
+                }
+            });
+
+            function checkPermissionByGroup(groupName) {
+               
+                const singleCheckBox = $('.per-' + groupName + " input");
+                if ($('.' + groupName + " input").is(':checked')) {
+                   
+                    singleCheckBox.prop("checked", true);
+                } else {
+                    
+                    singleCheckBox.prop("checked", false);
+                }
+                allChecked();
+            }
+
+            function checkUncheckModuleByPermission(permissionClassName, GroupClassName, countTotalPermission) {
+                const groupIdCheckBox = $('.' + GroupClassName + " input");
+                if ($('.' + permissionClassName + " input:checked").length == countTotalPermission) {
+                    groupIdCheckBox.prop("checked", true);
+                } else {
+                    groupIdCheckBox.prop("checked", false);
+                }
+                allChecked();
+            }
+            function allChecked(){
+                const countTotalPermission = {{count($permissions)}}
+                 //alert($(".permission input:checked").length);
+                if($(".single-permission input:checked").length == countTotalPermission){
+                    $('.select-all-permission input').prop("checked", true);
+                }else{
+                    $('.select-all-permission input').prop("checked", false);
+                }
+            }
         </script>
     @endpush
 </x-app-layout> 

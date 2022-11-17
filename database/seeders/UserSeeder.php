@@ -24,14 +24,15 @@ class UserSeeder extends Seeder
             $user->email = "ofsajeeb@gmail.com";
             $user->password = Hash::make("12345678");
             $user->save();
-
-            DB::table('model_has_roles')->insert(
-                array(
-                    'role_id' => 1,
-                    'model_type' => 'App\Models\User',
-                    'model_id' => $user->id
-                    )
-            );
+            
+            $user->assignRole('superadmin');
+            // DB::table('model_has_roles')->insert(
+            //     array(
+            //         'role_id' => 1,
+            //         'model_type' => 'App\Models\User',
+            //         'model_id' => $user->id
+            //         )
+            // );
         }
     }
 }

@@ -82,8 +82,14 @@ class RoleController extends Controller
             'name' => $request->name
         );
 
-        $result = $this->roles->create($data);
-        if ($result) {
+        $role = $this->roles->create($data);
+        $permissions = $request->permissions;
+        if(!empty($permissions)){
+            for ($i = 0; $i < count($permissions); $i++) {
+                $role->givePermissionTo($permissions[$i]);
+            }
+        }
+        if ($role) {
             Session::flash('success', 'Role Inserted Successfully.');
         } else {
             Session::flash('error', 'Role not inserted!');
@@ -176,6 +182,12 @@ class RoleController extends Controller
         } else {
             Session::flash('error', 'Role not deleted!');
         }
+        return back();
+    }
+
+    public function clearPermissionCache(){
+        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        Session::flash('success', 'Permission cache cleared Successfully.');
         return back();
     }
 }

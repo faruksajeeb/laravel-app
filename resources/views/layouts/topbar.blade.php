@@ -19,9 +19,9 @@
             <span class="d-none d-sm-inline mx-1">{{ Auth::user()->name }}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-light text-small shadow" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="#">Change Password</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="{{ route('change-password') }}">Change Password</a></li>
+            {{-- <li><a class="dropdown-item" href="#">Settings</a></li> --}}
+            <li><a class="dropdown-item" href="{{ route('user-profile') }}">Profile</a></li>
             <li>
                 <hr class="dropdown-divider">
             </li>

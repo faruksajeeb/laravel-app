@@ -37,6 +37,7 @@
             border: 1px solid rgba(255, 255, 255, 1);
         }
     </style>
+    @stack('styles')
 </head>
 
 <body class="font-sans antialiased">

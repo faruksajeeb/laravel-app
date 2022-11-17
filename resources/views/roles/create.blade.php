@@ -66,7 +66,7 @@
                                                         <li
                                                             class="@php echo ($index+1<$permissinCount) ? 'border-bottom':'' @endphp  p-2">
                                                             <label class="checkbox single-permission per-{{ $permission_group->group_name}}" onclick="checkUncheckModuleByPermission('per-{{$permission_group->group_name}}', '{{ $permission_group->group_name}}', {{count($groupWisePermissions)}})">
-                                                                <input type="checkbox"  value="{{$permission->name}}" name="permission[]" id="permission{{ $permission->id}}">
+                                                                <input type="checkbox"  value="{{$permission->name}}" name="permissions[]" id="permission{{ $permission->id}}">
                                                                 {{ ucwords(str_replace('.',' ',$permission->name)) }}
                                                             </label>
                                                         </li>

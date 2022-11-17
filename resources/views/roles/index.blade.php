@@ -36,7 +36,7 @@
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-md-6 col-sm-12 px-0">
+                                <div class="col-md-5 col-sm-12 px-0">
                                     <div class="input-group">
                                         <input type="text" name="search_text" value="" class="form-control"
                                             placeholder="Search by text">
@@ -52,12 +52,15 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-sm-12">
+                                <div class="col-md-4 col-sm-12">
+                                    <a href="{{route('clear-permission-cache')}}" class="btn btn-outline-secondary">Clear Permission Cache</a>
+                                    @can('role.create')
                                     <a href="{{ route('roles.create') }}"
                                         class="btn btn-xs btn-outline-primary float-end" name="create_new"
                                         type="button">
                                         <i class="fa-solid fa-plus"></i> Create New
                                     </a>
+                                    @endcan
                                 </div>
 
                             </div>
@@ -80,23 +83,31 @@
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $val->name }}</td>
                                         <td width="30%">
-                                             @foreach ($val->permissions as $permission)
+                                            @foreach ($val->permissions as $permission)
                                                 <span class="badge bg-info text-dark">{{ $permission->name }}</span>
-                                                    {{-- <br /> --}}
+                                                {{-- <br /> --}}
                                             @endforeach
                                         </td>
                                         <td>{{ $val->guard_name }}</td>
                                         <td>{{ $val->created_at }}</td>
                                         <td>{{ $val->updated_at }}</td>
                                         <td>
-                                            <a href="{{ route('roles.edit', Crypt::encryptString($val->id)) }}"
-                                                class="btn btn-outline-warning"><i class="fa-solid fa-pencil"></i></a>
-                                            <a href="{{ route('roles.destroy', Crypt::encryptString($val->id)) }}"
-                                                class="btn btn-outline-danger" onclick="event.preventDefault(); document.getElementById('delete-form-{{$val->id}}').submit();"><i class="fa-solid fa-remove"></i></a>
-                                            <form id="delete-form-{{$val->id}}" action="{{route('roles.destroy',Crypt::encryptString($val->id))}}" method="POST">
-                                                @method('DELETE')
-                                                @csrf
-                                            </form>
+                                            @can('role.edit')
+                                                <a href="{{ route('roles.edit', Crypt::encryptString($val->id)) }}"
+                                                    class="btn btn-outline-warning"><i class="fa-solid fa-pencil"></i></a>
+                                            @endcan
+                                            @can('role.delete')
+                                                <a href="{{ route('roles.destroy', Crypt::encryptString($val->id)) }}"
+                                                    class="btn btn-outline-danger"
+                                                    onclick="event.preventDefault(); document.getElementById('delete-form-{{ $val->id }}').submit();"><i
+                                                        class="fa-solid fa-remove"></i></a>
+                                                <form id="delete-form-{{ $val->id }}"
+                                                    action="{{ route('roles.destroy', Crypt::encryptString($val->id)) }}"
+                                                    method="POST">
+                                                    @method('DELETE')
+                                                    @csrf
+                                                </form>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @endforeach

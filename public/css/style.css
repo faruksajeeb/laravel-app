@@ -80,9 +80,9 @@ body{
     border-bottom: 1px solid #F4F7F5;
 }
 .navigation ul li:hover{
-    /* background-color: #e2d5fb;
-    color: #000000; */
-    font-weight: bold;
+    background-color: #e2d5fb;
+    color: #000000;
+    /* font-weight: bold; */
 }
 /* .navigation ul li:nth-child(1){ */
 
