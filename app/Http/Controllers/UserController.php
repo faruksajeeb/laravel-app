@@ -238,10 +238,10 @@ class UserController extends Controller
     }
 
     public function changePassword(){
-
+        return view('users.change-password');
     }
 
     public function userProfile(){
-        
+        return view('users.user-profile');
     }
 }
