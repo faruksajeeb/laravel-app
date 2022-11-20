@@ -4,27 +4,43 @@
     </x-slot>
     @push('styles')
         <style>
-           
+
         </style>
     @endpush
     <div class="content container-fluid">
         <div class="row">
-            <div class="col-md-8 offset-md-2">
+            <div class="col-md-4 offset-md-4">
 
-                <div class="page-header py-3">
+                <div class="page-header py-3 my-3">
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 text-center">
                             <h3 class="page-title">Change Password</h3>
                         </div>
                     </div>
                 </div>
-
-                <form>
+                <form action="{{ route('change-password') }}" method="POST">
+                    @method('PUT')
+                    @csrf
                     <div class="form-group">
-                        <label>Current Password <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" value="">
+                        <label>Old Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control @error('old_password') is-invalid @enderror"
+                            name="old_password" value="{{old('old_password')}}">
+                        @error('old_password')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
                     </div>
-                    
+                    <div class="form-group">
+                        <label>New Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control @error('new_password') is-invalid @enderror" name="new_password"  value="{{ old('new_password') }}">
+                        @error('new_password')
+                            <span class="text-danger">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control" name="new_password_confirmation" value="">
+                    </div>
+
                     <br>
                     <div class="submit-section">
                         <div class="d-grid gap-2 d-md-flex justify-content-md-center">

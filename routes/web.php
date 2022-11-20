@@ -23,7 +23,7 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard',[DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
-    Route::get('change-password',[UserController::class,'changePassword'])->name('change-password');
+    Route::any('change-password',[UserController::class,'changePassword'])->name('change-password');
     Route::get('user-profile',[UserController::class,'userProfile'])->name('user-profile');
         
     // Route::resource('roles', RoleController::class);
@@ -32,17 +32,17 @@ Route::middleware('auth')->group(function () {
             'roles' => RoleController::class,
             'users' => UserController::class
         ]);
-        Route::get('company-setting',[SettingController::class,'companySetting'])->name('company-setting');
-        Route::get('basic-setting',[SettingController::class,'basicSetting'])->name('basic-setting');
-        Route::get('theme-setting',[SettingController::class,'themeSetting'])->name('theme-setting');
-        Route::get('email-setting',[SettingController::class,'emailSetting'])->name('email-setting');
-        Route::get('performance-setting',[SettingController::class,'performanceSetting'])->name('performance-setting');
-        Route::get('approval-setting',[SettingController::class,'approvalSetting'])->name('approval-setting');
-        Route::get('invoice-setting',[SettingController::class,'invoiceSetting'])->name('invoice-setting');
-        Route::get('salary-setting',[SettingController::class,'salarySetting'])->name('salary-setting');
-        Route::get('notification-setting',[SettingController::class,'notificationSetting'])->name('notification-setting');
-        Route::get('toxbox-setting',[SettingController::class,'toxboxSetting'])->name('toxbox-setting');
-        Route::get('cron-setting',[SettingController::class,'cronSetting'])->name('cron-setting');
+        Route::match(['get', 'put'],'company-setting',[SettingController::class,'companySetting'])->name('company-setting');
+        Route::match(['get', 'put'],'basic-setting',[SettingController::class,'basicSetting'])->name('basic-setting');
+        Route::match(['get', 'put'],'theme-setting',[SettingController::class,'themeSetting'])->name('theme-setting');
+        Route::match(['get', 'put'],'email-setting',[SettingController::class,'emailSetting'])->name('email-setting');
+        Route::match(['get', 'put'],'performance-setting',[SettingController::class,'performanceSetting'])->name('performance-setting');
+        Route::match(['get', 'put'],'approval-setting',[SettingController::class,'approvalSetting'])->name('approval-setting');
+        Route::match(['get', 'put'],'invoice-setting',[SettingController::class,'invoiceSetting'])->name('invoice-setting');
+        Route::match(['get', 'put'],'salary-setting',[SettingController::class,'salarySetting'])->name('salary-setting');
+        Route::match(['get', 'put'],'notification-setting',[SettingController::class,'notificationSetting'])->name('notification-setting');
+        Route::match(['get', 'put'],'toxbox-setting',[SettingController::class,'toxboxSetting'])->name('toxbox-setting');
+        Route::match(['get', 'put'],'cron-setting',[SettingController::class,'cronSetting'])->name('cron-setting');
     });    
     Route::get('clear-permission-cache',[RoleController::class,'clearPermissionCache'])->name('clear-permission-cache');
 });

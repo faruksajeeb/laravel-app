@@ -7,7 +7,7 @@
                         <a href="{{ route('dashboard') }}" class="bg-white ">
                             <span class="icon"><i class="fa-brands fa-xl fa-apple"></i></span>
                             <span class="title">
-                                <h5 class=" py-4">{{ config('app.name', 'Laravel') }}</h5>
+                                <h5 class=" py-4">{{ $company_settings->company_name }}</h5>
                             </span>
                         </a>
                     </li>

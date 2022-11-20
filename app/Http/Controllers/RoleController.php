@@ -12,10 +12,12 @@ use Illuminate\Support\Facades\Session;
 class RoleController extends Controller
 {
     protected $roles;
+    protected $userid;
 
     public function __construct(Role $roles)
     {
         $this->roles = $roles;
+        Auth::guard('web')->user();
     }
     /**
      * Display a listing of the resource.
