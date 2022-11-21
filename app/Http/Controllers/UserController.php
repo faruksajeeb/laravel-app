@@ -120,7 +120,7 @@ class UserController extends Controller
             }
         }
         if ($insertId) {
-            Webspice::log($this->tableName, $insertId, "Data Created successfully!");
+            Webspice::log($this->tableName, $insertId, "Data Created.");
             Session::flash('success', 'User Created Successfully.');
         } else {
             Session::flash('error', 'User not created!');
@@ -204,6 +204,8 @@ class UserController extends Controller
             $user->syncPermissions($permissions);
         }
         if ($result) {
+            # write log
+            Webspice::log($this->tableName, $id, "Data updated.!");
             Session::flash('success', 'User has been updated successfully.');
         } else {
             Session::flash('error', 'User not updated!');
@@ -230,6 +232,7 @@ class UserController extends Controller
             $result = $user->delete();
         }
         if ($result) {
+            Webspice::log($this->tableName, $id, "Data deleted.");
             Session::flash('success', 'User deleted Successfully.');
         } else {
             Session::flash('error', 'User not deleted!');

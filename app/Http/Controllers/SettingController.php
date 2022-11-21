@@ -22,6 +22,10 @@ class SettingController extends Controller
 
     public function companySetting(Request $request)
     {
+        #permission verfy
+        if (is_null($this->user) || !$this->user->can('company.setting')) {
+            abort(403, 'SORRY! You are unauthorized to access user list!');
+        }
         if ($request->all()) {
             $request->validate(
                 [
@@ -40,14 +44,15 @@ class SettingController extends Controller
                 'phone_number' => $request->phone_number,
                 'mobile_number' => $request->mobile_number,
                 'fax' => $request->fax,
-                'website_url' => $request->website_url
+                'website_url' => $request->website_url,
+                'updated_at' => now()
             );
             try {
                 DB::table('company_settings')
                     ->where('id', 1)
                     ->update($updateData);
-                    # remove cache
-                    Cache::forget('company_settings');
+                # remove cache
+                Cache::forget('company_settings');
             } catch (\Exception $e) {
                 # return error message
                 return back()->with("error", $e->getMessage());
@@ -57,23 +62,62 @@ class SettingController extends Controller
             # success message
             return back()->with("success", "Company information has been changed successfully!");
         }
-        if ( Cache::has('company_settings') ) {
+        if (Cache::has('company_settings')) {
             # get from file cache
             $companySettings = Cache::get('company_settings');
-        }else{
+        } else {
             # get from database
-            $companySettings = DB::table('company_settings')->first();    
-            Cache::put('company_settings', $companySettings);     
+            $companySettings = DB::table('company_settings')->first();
+            Cache::put('company_settings', $companySettings);
         }
         return view('settings.company-setting', compact('companySettings'));
     }
 
     public function basicSetting(Request $request)
     {
-        // $basicSettings = DB::table('basic_settings')->get();
-        return view('settings.basic-setting', [
-            // 'basicSettings' => $basicSettings
-        ]);
+        #permission verfy
+        if (is_null($this->user) || !$this->user->can('basic.setting')) {
+            abort(403, 'SORRY! You are unauthorized to access user list!');
+        }
+        if ($request->all()) {
+            $request->validate(
+                [
+                    'default_country' => 'required'
+                ]
+            );
+            $updateData = array(
+                'default_country' => $request->default_country,
+                'timezone' => $request->timezone,
+                'currency_code' => $request->currency_code,
+                'date_format' => $request->date_format,
+                'default_language' => $request->default_language,
+                'currency_symbol' => $request->currency_symbol,
+                'updated_at' => now()
+            );
+            try {
+                DB::table('company_settings')
+                    ->where('id', 1)
+                    ->update($updateData);
+                # remove cache
+                Cache::forget('company_settings');
+            } catch (\Exception $e) {
+                # return error message
+                return back()->with("error", $e->getMessage());
+            }
+            # write log
+            Webspice::log('company_settings', 1, "Company information updated.");
+            # success message
+            return back()->with("success", "Company information has been changed successfully!");
+        }
+        if (Cache::has('company_settings')) {
+            # get from file cache
+            $companySettings = Cache::get('company_settings');
+        } else {
+            # get from database
+            $companySettings = DB::table('company_settings')->first();
+            Cache::put('company_settings', $companySettings);
+        }
+        return view('settings.company-setting', compact('companySettings'));
     }
     public function themeSetting(Request $request)
     {

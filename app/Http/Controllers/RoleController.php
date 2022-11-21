@@ -2,22 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Lib\Webspice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class RoleController extends Controller
 {
+    protected $user;
     protected $roles;
     protected $userid;
 
     public function __construct(Role $roles)
     {
         $this->roles = $roles;
-        Auth::guard('web')->user();
+        $this->middleware(function ($request, $next) {
+            //    $this->user = Auth::user();
+            $this->user = Auth::guard('web')->user();
+            return $next($request);
+        });
     }
     /**
      * Display a listing of the resource.
@@ -26,6 +33,10 @@ class RoleController extends Controller
      */
     public function index(Request $request)
     {
+         #permission verfy
+         if (is_null($this->user) || !$this->user->can('role.view')) {
+            abort(403, 'SORRY! You are unauthorized to access user list!');
+        }
         // $all_roles_in_database = Role::all()->pluck('name');
         // $roles = $this->roles->all();
         $query = $this->roles->orderBy('created_at', 'desc');
@@ -51,6 +62,10 @@ class RoleController extends Controller
      */
     public function create()
     {
+         #permission verfy
+         if (is_null($this->user) || !$this->user->can('role.create')) {
+            abort(403, 'SORRY! You are unauthorized to access user list!');
+        }
         $permissions = Permission::all();
         $permission_groups = Permission::select('group_name')->groupBy('group_name')->get();
         return view('roles.create', [
@@ -67,6 +82,10 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+         #permission verfy
+         if (is_null($this->user) || !$this->user->can('role.create')) {
+            abort(403, 'SORRY! You are unauthorized to access user list!');
+        }
 
         $validatedData = $request->validate(
             [
@@ -92,6 +111,7 @@ class RoleController extends Controller
             }
         }
         if ($role) {
+            Webspice::log($this->tableName, $role->id, "Data Created.");
             Session::flash('success', 'Role Inserted Successfully.');
         } else {
             Session::flash('error', 'Role not inserted!');
@@ -118,6 +138,10 @@ class RoleController extends Controller
      */
     public function edit($id)
     {
+         #permission verfy
+         if (is_null($this->user) || !$this->user->can('role.edit')) {
+            abort(403, 'SORRY! You are unauthorized to access user list!');
+        }
         $id = Crypt::decryptString($id);
         $roleInfo = $this->roles->findById($id);
         $permissions = Permission::all();
@@ -138,6 +162,10 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
+         #permission verfy
+         if (is_null($this->user) || !$this->user->can('role.edit')) {
+            abort(403, 'SORRY! You are unauthorized to access user list!');
+        }
         $id = Crypt::decryptString($id);
         $validatedData = $request->validate(
             [
@@ -159,6 +187,8 @@ class RoleController extends Controller
         $role->name = $request->name; 
         $result = $role->save();
         if ($result) {
+            #Log
+            Webspice::log($this->tableName, $id, "Data Updated.");
             Session::flash('success', 'Role Updated Successfully.');
         } else {
             Session::flash('error', 'Role not Updated!');
@@ -174,12 +204,18 @@ class RoleController extends Controller
      */
     public function destroy($id)
     {
+         #permission verfy
+         if (is_null($this->user) || !$this->user->can('role.delete')) {
+            abort(403, 'SORRY! You are unauthorized to access user list!');
+        }
         $id = Crypt::decryptString($id);
         $role = $this->roles->findById($id);
         if(!is_null($role)){
             $result = $role->delete();
         }
         if ($result) {
+            # Log
+            Webspice::log($this->tableName, $id, "Data Deleted.");
             Session::flash('success', 'Role deleted Successfully.');
         } else {
             Session::flash('error', 'Role not deleted!');

@@ -19,9 +19,13 @@
             <span class="d-none d-sm-inline mx-1">{{ Auth::user()->name }}</span>
         </a>
         <ul class="dropdown-menu dropdown-menu-light text-small shadow" aria-labelledby="dropdownUser1">
+            @can('change.password')
             <li><a class="dropdown-item" href="{{ route('change-password') }}">Change Password</a></li>
+            @endcan
             {{-- <li><a class="dropdown-item" href="#">Settings</a></li> --}}
+            @can('user.profile')
             <li><a class="dropdown-item" href="{{ route('user-profile') }}">Profile</a></li>
+            @endcan
             <li>
                 <hr class="dropdown-divider">
             </li>

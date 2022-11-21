@@ -70,6 +70,16 @@ class RolePermissionSeeder extends Seeder
                         'name'=>'user.export',
                         'is_menu'=>'no',
                         'menu_name' => ''
+                    ],
+                    [
+                        'name'=>'user.profile',
+                        'is_menu'=>'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name'=>'change.password',
+                        'is_menu'=>'yes',
+                        'menu_name' => ''
                     ]
                 ]
             ],
@@ -138,6 +148,66 @@ class RolePermissionSeeder extends Seeder
                         'menu_name' => ''
                     ]
                 ]
+            ], [
+                // Profile
+                'group_name' => 'settings',
+                'permissions' => [
+                    [
+                        'name' => 'company.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name' => 'basic.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name' => 'theme.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name' => 'email.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name' => 'approval.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name' => 'invoice.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name' => 'notification.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name' => 'performance.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name' => 'salary.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name' => 'toxbox.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ],
+                    [
+                        'name' => 'cron.setting',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ]
+                ]
             ]
 
         ];
@@ -150,8 +220,23 @@ class RolePermissionSeeder extends Seeder
                     'is_menu' => $permissions[$i]['permissions'][$j]['is_menu'],
                     'menu_name' => $permissions[$i]['permissions'][$j]['menu_name']                     
                 ]);
-                $roleSuperAdmin->givePermissionTo($permission);
-                $permission->assignRole($roleSuperAdmin);
+                if($permissions[$i]['permissions'][$j]['name']=='change.password' || $permissions[$i]['permissions'][$j]['name']=='user.profile'){
+                    $roleSuperAdmin->givePermissionTo($permission);
+                    $roleAdmin->givePermissionTo($permission);
+                    $roleWriter->givePermissionTo($permission);
+                    $roleEditor->givePermissionTo($permission);
+                    $roleUser->givePermissionTo($permission);
+
+                    $permission->assignRole($roleSuperAdmin);
+                    $permission->assignRole($roleAdmin);
+                    $permission->assignRole($roleWriter);
+                    $permission->assignRole($roleEditor);
+                    $permission->assignRole($roleUser);
+                }else{
+                    $roleSuperAdmin->givePermissionTo($permission);
+                    $permission->assignRole($roleSuperAdmin);
+                }
+                
             }            
         }
     }

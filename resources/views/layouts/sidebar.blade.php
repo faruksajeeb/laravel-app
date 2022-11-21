@@ -75,39 +75,61 @@
                                 </ul>
                             </li>
                         @endif
+                        @can('company.setting')
                         <li>
                             <a href="{{ route('company-setting') }}" class="nav-link px-0"><i class="fa-solid fa-building"></i>  <span class="d-sm-inline ps-1 mb-1"> Company Settings</span></a>                            
                         </li>
+                        @endcan
+                        @can('basic.setting')
                         <li>
                             <a href="{{ route('basic-setting') }}" class="nav-link px-0"><i class="fa-solid fa-clock"></i>  <span class="d-sm-inline ps-1 mb-1"> Basic Settings</span></a>                       
                         </li>
+                        @endcan
+                        @can('theme.setting')
                         <li>
                             <a href="{{ route('theme-setting') }}" class="nav-link px-0"><i class="fa-solid fa-image"></i>  <span class="d-sm-inline ps-1 mb-1"> Theme Settings</span></a>                       
                         </li>
+                        @endcan
+                        @can('email.setting')
                         <li>
                             <a href="{{ route('email-setting') }}" class="nav-link px-0"><i class="fa-solid fa-at"></i>  <span class="d-sm-inline ps-1 mb-1"> Email Settings</span></a>                       
                         </li>
+                        @endcan
+                        @can('performance.setting')
                         <li>
                             <a href="{{ route('performance-setting') }}" class="nav-link px-0"><i class="fa-solid fa-chart-bar"></i>  <span class="d-sm-inline ps-1 mb-1"> Performance Configuration</span></a>                       
                         </li>
+                        @endcan
+                        @can('approval.setting')
                         <li>
                             <a href="{{ route('approval-setting') }}" class="nav-link px-0"><i class="fa-solid fa-thumbs-up"></i>  <span class="d-sm-inline ps-1 mb-1"> Approval Settings</span></a>                       
                         </li>
+                        @endcan
+                        @can('invoice.setting')
                         <li>
                             <a href="{{ route('invoice-setting') }}" class="nav-link px-0"><i class="fa-solid fa-pencil-square"></i>  <span class="d-sm-inline ps-1 mb-1"> Invoice Settings</span></a>                       
                         </li>
+                        @endcan
+                        @can('salary.setting')
                         <li>
                             <a href="{{ route('salary-setting') }}" class="nav-link px-0"><i class="fa-solid fa-money-bill"></i>  <span class="d-sm-inline ps-1 mb-1"> Salary Settings</span></a>                       
                         </li>
+                        @endcan
+                        @can('notification.setting')
                         <li>
                             <a href="{{ route('notification-setting') }}" class="nav-link px-0"><i class="fa-solid fa-globe"></i>  <span class="d-sm-inline ps-1 mb-1"> Notifications Settings</span></a>                       
                         </li>
+                        @endcan
+                        @can('toxbox.setting')
                         <li>
                             <a href="{{ route('toxbox-setting') }}" class="nav-link px-0"><i class="fa-solid fa-comment"></i>  <span class="d-sm-inline ps-1 mb-1">ToxBox Settings</span></a>                       
                         </li>
+                        @endcan
+                        @can('cron.setting')
                         <li>
                             <a href="{{ route('cron-setting') }}" class="nav-link px-0"><i class="fa-solid fa-rocket"></i>  <span class="d-sm-inline ps-1 mb-1">Cron Settings</span></a>                       
                         </li>
+                        @endcan
                     </ul>
                 </li>
 
