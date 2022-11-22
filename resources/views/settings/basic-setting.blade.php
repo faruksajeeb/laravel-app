@@ -21,16 +21,24 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Default Country</label>
-                                <select class="select form-control">
-                                    <option selected="selected">USA</option>
-                                    <option>United Kingdom</option>
+                                <select name="default_country" class="select form-control  @error('default_country') is-invalid @enderror">
+                                    <option selected="selected" value="Bangladesh" {{ ($basicSettings && $basicSettings->default_country == 'Bangladesh') ? 'selected' : '' }}>Bangladesh</option>
+                                    <option value="India" {{ ($basicSettings && $basicSettings->default_country == 'India') ? 'selected' : '' }}>India</option>
+                                    <option value="Pakisthan" {{ ($basicSettings && $basicSettings->default_country == 'Pakisthan') ? 'selected' : '' }}>Pakisthan</option>
+                                    <option value="Miyanmar" {{ ($basicSettings && $basicSettings->default_country == 'Miyanmar') ? 'selected' : '' }}>Miyanmar</option>
+                                    <option value="Nepal" {{ ($basicSettings && $basicSettings->default_country == 'Nepal') ? 'selected' : '' }}>Nepal</option>
+                                    <option value="Bhutan" {{ ($basicSettings && $basicSettings->default_country == 'Bhutan') ? 'selected' : '' }}>Bhutan</option>
+                                    <option value="Srilanka" {{ ($basicSettings && $basicSettings->default_country == 'Srilanka') ? 'selected' : '' }}>Srilanka</option>
                                 </select>
+                                @error('default_country')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Date Format</label>
-                                <select class="select form-control">
+                                <select name="date_format" class="select form-control  @error('date_format') is-invalid @enderror">
                                     <option value="d/m/Y">15/05/2016</option>
                                     <option value="d.m.Y">15.05.2016</option>
                                     <option value="d-m-Y">15-05-2016</option>
@@ -40,40 +48,55 @@
                                     <option value="M d Y">May 15 2016</option>
                                     <option selected="selected" value="d M Y">15 May 2016</option>
                                 </select>
+                                @error('date_format')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Timezone</label>
-                                <select class="select form-control">
+                                <select name="timezone" class="select form-control  @error('timezone') is-invalid @enderror">
                                     <option>(UTC +5:30) Antarctica/Palmer</option>
                                 </select>
+                                @error('timezone')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Default Language</label>
-                                <select class="select form-control">
+                                <select name="default_language" class="select form-control  @error('default_language') is-invalid @enderror">
                                     <option selected="selected">English</option>
                                     <option>French</option>
                                 </select>
+                                @error('default_language')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Currency Code</label>
-                                <select class="select form-control">
+                                <select name="currency_code" class="select form-control  @error('currency_code') is-invalid @enderror">
                                     <option selected="selected">USD</option>
                                     <option>Pound</option>
                                     <option>EURO</option>
                                     <option>Ringgit</option>
                                 </select>
+                                @error('currency_code')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label>Currency Symbol</label>
-                                <input class="form-control" readonly value="$" type="text">
+                                <input name="currency_symbol" class="form-control  @error('currency_symbol') is-invalid @enderror" readonly value="$" type="text">
+                                @error('currency_symbol')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                     </div>
