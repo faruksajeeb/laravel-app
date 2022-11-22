@@ -14,7 +14,9 @@
                     </div>
                 </div>
 
-                <form>
+                <form action="{{ route('basic-setting') }}" method="POST" class="needs-validation" novalidate>
+                    @method('PUT')
+                    @csrf
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">

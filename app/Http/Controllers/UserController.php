@@ -40,7 +40,6 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-
         #permission verfy
         if (is_null($this->user) || !$this->user->can('user.view')) {
             abort(403, 'SORRY! You are unauthorized to access user list!');

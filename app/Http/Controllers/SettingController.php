@@ -95,30 +95,31 @@ class SettingController extends Controller
                 'updated_at' => now()
             );
             try {
-                DB::table('company_settings')
+                DB::table('basic_settings')
                     ->where('id', 1)
                     ->update($updateData);
                 # remove cache
-                Cache::forget('company_settings');
+                Cache::forget('basic_settings');
             } catch (\Exception $e) {
                 # return error message
                 return back()->with("error", $e->getMessage());
             }
             # write log
-            Webspice::log('company_settings', 1, "Company information updated.");
+            Webspice::log('basic_settings', 1, "Basic information updated.");
             # success message
-            return back()->with("success", "Company information has been changed successfully!");
+            return back()->with("success", "Basic information has been changed successfully!");
         }
-        if (Cache::has('company_settings')) {
+        if (Cache::has('basic_settings')) {
             # get from file cache
-            $companySettings = Cache::get('company_settings');
+            $basicSettings = Cache::get('basic_settings');
         } else {
             # get from database
-            $companySettings = DB::table('company_settings')->first();
-            Cache::put('company_settings', $companySettings);
+            $basicSettings = DB::table('basic_settings')->first();
+            Cache::put('basic_settings', $basicSettings);
         }
-        return view('settings.company-setting', compact('companySettings'));
+        return view('settings.basic-setting', compact('basicSettings'));
     }
+    
     public function themeSetting(Request $request)
     {
         // $themeSettings = DB::table('theme_settings')->get();
