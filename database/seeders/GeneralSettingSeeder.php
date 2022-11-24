@@ -23,5 +23,16 @@ class GeneralSettingSeeder extends Seeder
             'contact_person' => 'Omar Sajeeb Mridha',
             'created_at' => now()
         ]);
+
+        # Create default Basic Setting
+        DB::table('basic_settings')->insert([
+            'default_country' => 'Bangladesh',
+            'timezone' => 'Asia/Dhaka',
+            'currency_code' => 'BDT',
+            'date_format' => 'Y-m-d',
+            'default_language' => 'English',
+            'currency_symbol' => '৳',
+            'created_at' => now()
+        ]);
     }
 }
