@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('theme_settings', function (Blueprint $table) {
+        Schema::create('toxbox_settings', function (Blueprint $table) {
             $table->id();
-            $table->string('website_name');
-            $table->string('website_logo')->nullable();
-            $table->string('website_favicon')->nullable();
+            $table->string('api_key');
+            $table->string('api_secret');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('theme_settings');
+        Schema::dropIfExists('toxbox_settings');
     }
 };

@@ -42,43 +42,43 @@ class RolePermissionSeeder extends Seeder
                 'group_name' => 'user',
                 'permissions' => [
                     [
-                        'name'=>'user.create',
-                        'is_menu'=>'yes',
+                        'name' => 'user.create',
+                        'is_menu' => 'yes',
                         'menu_name' => 'Create User'
                     ],
                     [
-                        'name'=>'user.edit',
-                        'is_menu'=>'no',
+                        'name' => 'user.edit',
+                        'is_menu' => 'no',
                         'menu_name' => ''
                     ],
                     [
-                        'name'=>'user.view',
-                        'is_menu'=>'yes',
+                        'name' => 'user.view',
+                        'is_menu' => 'yes',
                         'menu_name' => 'Users'
                     ],
                     [
-                        'name'=>'user.delete',
-                        'is_menu'=>'no',
+                        'name' => 'user.delete',
+                        'is_menu' => 'no',
                         'menu_name' => ''
                     ],
                     [
-                        'name'=>'user.import',
-                        'is_menu'=>'no',
+                        'name' => 'user.import',
+                        'is_menu' => 'no',
                         'menu_name' => ''
                     ],
                     [
-                        'name'=>'user.export',
-                        'is_menu'=>'no',
+                        'name' => 'user.export',
+                        'is_menu' => 'no',
                         'menu_name' => ''
                     ],
                     [
-                        'name'=>'user.profile',
-                        'is_menu'=>'yes',
+                        'name' => 'user.profile',
+                        'is_menu' => 'yes',
                         'menu_name' => ''
                     ],
                     [
-                        'name'=>'change.password',
-                        'is_menu'=>'yes',
+                        'name' => 'change.password',
+                        'is_menu' => 'yes',
                         'menu_name' => ''
                     ]
                 ]
@@ -113,22 +113,22 @@ class RolePermissionSeeder extends Seeder
                 'group_name' => 'permission',
                 'permissions' => [
                     [
-                        'name'=> 'permission.create',
+                        'name' => 'permission.create',
                         'is_menu' => 'yes',
                         'menu_name' => 'Create Permission'
                     ],
                     [
-                        'name'=> 'permission.edit',
+                        'name' => 'permission.edit',
                         'is_menu' => 'no',
                         'menu_name' => ''
                     ],
                     [
-                        'name'=> 'permission.view',
+                        'name' => 'permission.view',
                         'is_menu' => 'yes',
                         'menu_name' => 'Permissions'
                     ],
                     [
-                        'name'=> 'permission.delete',
+                        'name' => 'permission.delete',
                         'is_menu' => 'no',
                         'menu_name' => ''
                     ],
@@ -208,6 +208,50 @@ class RolePermissionSeeder extends Seeder
                         'menu_name' => ''
                     ]
                 ]
+            ], [
+                // Master
+                'group_name' => 'option_group',
+                'permissions' => [
+                    [
+                        'name' => 'option_group.view',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ], [
+                        'name' => 'option_group.create',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ], [
+                        'name' => 'option_group.edit',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ], [
+                        'name' => 'option_group.delete',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ]
+                ]
+            ], [
+                // Master
+                'group_name' => 'option',
+                'permissions' => [
+                    [
+                        'name' => 'option.view',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ], [
+                        'name' => 'option.create',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ], [
+                        'name' => 'option.edit',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ], [
+                        'name' => 'option.delete',
+                        'is_menu' => 'yes',
+                        'menu_name' => ''
+                    ]
+                ]
             ]
 
         ];
@@ -218,9 +262,9 @@ class RolePermissionSeeder extends Seeder
                     'group_name' => $permissions[$i]['group_name'],
                     'name' => $permissions[$i]['permissions'][$j]['name'],
                     'is_menu' => $permissions[$i]['permissions'][$j]['is_menu'],
-                    'menu_name' => $permissions[$i]['permissions'][$j]['menu_name']                     
+                    'menu_name' => $permissions[$i]['permissions'][$j]['menu_name']
                 ]);
-                if($permissions[$i]['permissions'][$j]['name']=='change.password' || $permissions[$i]['permissions'][$j]['name']=='user.profile'){
+                if ($permissions[$i]['permissions'][$j]['name'] == 'change.password' || $permissions[$i]['permissions'][$j]['name'] == 'user.profile') {
                     $roleSuperAdmin->givePermissionTo($permission);
                     $roleAdmin->givePermissionTo($permission);
                     $roleWriter->givePermissionTo($permission);
@@ -232,12 +276,11 @@ class RolePermissionSeeder extends Seeder
                     $permission->assignRole($roleWriter);
                     $permission->assignRole($roleEditor);
                     $permission->assignRole($roleUser);
-                }else{
+                } else {
                     $roleSuperAdmin->givePermissionTo($permission);
                     $permission->assignRole($roleSuperAdmin);
                 }
-                
-            }            
+            }
         }
     }
 }

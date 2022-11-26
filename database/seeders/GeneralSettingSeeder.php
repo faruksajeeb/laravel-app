@@ -34,5 +34,49 @@ class GeneralSettingSeeder extends Seeder
             'currency_symbol' => '৳',
             'created_at' => now()
         ]);
+
+         # Create default Theme Setting
+         DB::table('theme_settings')->insert([
+            'website_name' => 'XYZ Ltd.',
+            'created_at' => now()
+        ]);
+
+         # Create default Email Setting
+         DB::table('email_settings')->insert([
+            'host_type' => 'SMTP',
+            'email_from' => 'example@mail.com',
+            'email_from_name' => 'Company Name',
+            'created_at' => now()
+        ]);
+
+         # Create default Invoice Setting
+         DB::table('invoice_settings')->insert([
+            'invoice_prefix' => 'INV',
+            'created_at' => now()
+        ]);
+
+         # Create default Notification Setting
+         DB::table('notifications_settings')->insert([
+            'employee' => 'no',
+            'holidays' => 'no',
+            'leaves' => 'no',
+            'events' => 'no',
+            'chat' => 'no',
+            'jobs' => 'no',
+            'created_at' => now()
+        ]);
+
+         # Create default Tox-box Setting
+         DB::table('toxbox_settings')->insert([
+            'api_key' => '',
+            'api_secret' => '',
+            'created_at' => now()
+        ]);
+
+         # Create default cron Setting
+         DB::table('cron_settings')->insert([
+            'cron_key' => '',
+            'created_at' => now()
+        ]);
     }
 }

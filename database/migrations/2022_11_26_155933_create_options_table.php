@@ -13,11 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('theme_settings', function (Blueprint $table) {
+        Schema::create('options', function (Blueprint $table) {
             $table->id();
-            $table->string('website_name');
-            $table->string('website_logo')->nullable();
-            $table->string('website_favicon')->nullable();
+            $table->integer('option_group_name');
+            $table->string('option_value');
+            $table->string('option_value2')->nullable();
+            $table->string('option_value3')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('theme_settings');
+        Schema::dropIfExists('options');
     }
 };
