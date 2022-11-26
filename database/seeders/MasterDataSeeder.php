@@ -80,112 +80,45 @@ class MasterDataSeeder extends Seeder
         $options = array(
             [
                 'option_group_name' => 'continent',
-                'option_value' => 'Asia'
-            ], [
-                'option_group_name' => 'continent',
-                'option_value' => 'Africa'
-            ], [
-                'option_group_name' => 'continent',
-                'option_value' => 'North America'
-            ], [
-                'option_group_name' => 'continent',
-                'option_value' => 'South America'
-            ], [
-                'option_group_name' => 'continent',
-                'option_value' => 'Antarctica'
-            ], [
-                'option_group_name' => 'continent',
-                'option_value' => 'Europe'
-            ], [
-                'option_group_name' => 'continent',
-                'option_value' => 'Australia'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Bangladesh'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Pakistan'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'India'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Miyanmar'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Vutan'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Nepal'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Srilanka'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'China'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'South Korea'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'North Korea'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Thiland'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Singapue'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'America'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Saudi Arabia'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Iran'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Iraq'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Afganistan'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Turkey'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Libiya'
-            ], [
-                'option_group_name' => 'country',
-                'option_value' => 'Seriya'
-            ], [
-                'option_group_name' => 'blood_group',
                 'option' => [
-                    'A+','A-','B+','B-','AB+','AB-','O+','O-'
+                    'Asia',
+                    'Africa',
+                    'North America',
+                    'South America',
+                    'Antarctica',
+                    'Europe',
+                    'Australia',
+                ]
+            ], [
+                'option_group_name' => 'country',
+                'option_value' => [
+                    'Bangladesh', 
+                    'Pakistan', 
+                    'India', 
+                    'Miyanmar', 
+                    'Vutan',
+                    'Nepal', 
+                    'Srilanka', 
+                    'China', 
+                    'South Korea', 
+                    'North Korea', 
+                    'Thiland', 
+                    'Singapue',
+                    'America', 
+                    'Saudi Arabia', 
+                    'Iran', 
+                    'Iraq', 
+                    'Afganistan', 
+                    'Turkey', 
+                    'Libiya', 
+                    'Seriya',
                 ]
             ], [
                 'option_group_name' => 'blood_group',
-                'option_value' => 
+                'option' => [
+                    'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'
+                ]
             ], [
-                'option_group_name' => 'blood_group',
-                'option_value' => 'B+'
-            ], [
-                'option_group_name' => 'blood_group',
-                'option_value' => 'B-'
-            ], [
-                'option_group_name' => 'blood_group',
-                'option_value' => 'AB+'
-            ], [
-                'option_group_name' => 'blood_group',
-                'option_value' => 'AB-'
-            ], [
-                'option_group_name' => 'blood_group',
-                'option_value' => 'O+'
-            ], [
-                'option_group_name' => 'blood_group',
-                'option_value' => 'O-'
-            ],[
                 'option_group_name' => 'gender',
                 'option' => [
                     'Male',
@@ -205,6 +138,48 @@ class MasterDataSeeder extends Seeder
                     'Sikhism',
                     'Taoism',
                     'Zoroastrianism',
+                ]
+            ]
+            , [
+                'option_group_name' => 'marital_status',
+                'option' => [
+                    'Married',
+                    'Divorced',
+                    'Separated',
+                    'Widowed',
+                    'Never married',
+                ]
+            ]
+            , [
+                'option_group_name' => 'leave_type',
+                'option' => [
+                    'Annual Leave',
+                    'Casual Leave',
+                    'Sick Leave',
+                    'Maternity Leave',
+                    'Special Leave',
+                ]
+            ]
+            , [
+                'option_group_name' => 'pay_type',
+                'option' => [
+                    'Cash',
+                    'Check',
+                    'Bank',
+                    'Credit Card',
+                    'A/R',
+                    'COD',
+                ]
+            ]
+            , [
+                'option_group_name' => 'yearly_holiday',
+                'option' => [
+                    'Language Martyrs Day', 
+                    'Shab e-Barat',
+                    'Independence Day',
+                    'Bengali New Year',
+                    'Shab-e-Qadr',
+                    'Jumatul Bidah',
                 ]
             ]
         );
