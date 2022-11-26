@@ -180,6 +180,43 @@ class MasterDataSeeder extends Seeder
                     'Bengali New Year',
                     'Shab-e-Qadr',
                     'Jumatul Bidah',
+                    'Labour Day',
+                    'Eid al-Fitr',
+                    'Buddha Purnima',
+                    'Eid-ul-Azha',
+                    'Ashura',
+                    'National Mourning Day',
+                    'Janmashtami',
+                    'Durga Puja',
+                    'Eid-e-Miladunnabi',
+                    'Victory Day',
+                    'Christmas Day',
+                ]
+            ]
+            , [
+                'option_group_name' => 'working_shift',
+                'option' => [
+                    'Day',
+                    'Night',
+                    'Morning',
+                ]
+            ]
+            , [
+                'option_group_name' => 'relative_type',
+                'option' => [
+                    'Father',
+                    'Grand Father',
+                    'Mother',
+                    'Grand Mother',
+                    'Brother',
+                    'Sister',
+                    'Wife',
+                    'Son',
+                    'Daughter',
+                    'Brother-in-law',
+                    'Sister-in-law',
+                    'Father-in-law',
+                    'Mother-in-law',
                 ]
             ]
         );
