@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('options', function (Blueprint $table) {
             $table->id();
-            $table->integer('option_group_name');
+            $table->string('option_group_name');
             $table->string('option_value');
             $table->string('option_value2')->nullable();
             $table->string('option_value3')->nullable();
