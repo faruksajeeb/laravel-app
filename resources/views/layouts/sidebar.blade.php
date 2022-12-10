@@ -28,7 +28,7 @@
                         <ul class="collapse nav flex-column ms-3 ps-3 {{ Route::is('users.index') || Route::is('users.create') || Route::is('roles.index') || Route::is('roles.create') ? 'show' : '' }}"
                             id="master_submenu1" data-bs-parent="#menu">
                             <li class="{{ Route::is('users.create') ? 'active' : '' }}">
-                                <a href="{{ url('users/create') }}" class="nav-link px-2"> <span class="d-sm-inline"><i
+                                <a href="{{ url('option-groups') }}" class="nav-link px-2"> <span class="d-sm-inline"><i
                                             class="fa-solid fa-table"></i> Option Groups</span></a>
                             </li>
                             <li class="{{ Route::is('users.create') ? 'active' : '' }}">

@@ -37,7 +37,9 @@
             border: 1px solid rgba(255, 255, 255, 1);
         }
     </style>
+   
     @stack('styles')
+    @livewireStyles
 </head>
 
 <body class="font-sans antialiased">
@@ -105,7 +107,9 @@
             main.classList.toggle('active');
         }
     </script>
+ 
     @stack('scripts')
+    @livewireScripts
 </body>
 
 </html>

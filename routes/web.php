@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
+use App\Http\Livewire\OptionGroup;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,7 +44,9 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'put'],'notification-setting',[SettingController::class,'notificationSetting'])->name('notification-setting');
         Route::match(['get', 'put'],'toxbox-setting',[SettingController::class,'toxboxSetting'])->name('toxbox-setting');
         Route::match(['get', 'put'],'cron-setting',[SettingController::class,'cronSetting'])->name('cron-setting');
-    });    
+    });   
+    
+    Route::get('option-groups',OptionGroup::class); 
     Route::get('clear-permission-cache',[RoleController::class,'clearPermissionCache'])->name('clear-permission-cache');
 });
 
