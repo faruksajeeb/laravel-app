@@ -36,9 +36,22 @@
             background-color: rgba(0, 123, 255, .15);
             border: 1px solid rgba(255, 255, 255, 1);
         }
+        .pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover {
+    z-index: 3;
+    color: #23527c;
+    background-color: purple;
+    border-color: #ddd;
+}
+
+
+
     </style>
    
     @stack('styles')
+    
     @livewireStyles
 </head>
 

@@ -7,7 +7,7 @@
             <div class="col-md-12">
                 <div class="card">
 
-                    <div class="card-header bg-white">
+                    <div class="card-header bg-white my-0 pt-2">
                         <div class="row">
                             <div class="col-md-8">
                                 <h4 class="card-title py-1"><i class="fa fa-list"></i> Option Groups</h4>
@@ -22,14 +22,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body py-1">
                         <div class="row my-1">
                             <div class="col-md-3">
                                 <div class="input-group">
                                     <input class="form-control border-end-0 border rounded-pill" type="text"
                                         placeholder="Search..." wire:model="searchTerm">
                                 </div>
-                                <span>{{$searchTerm}}</span>
+                                <span>{{ $searchTerm }}</span>
                             </div>
                             <div class="col-md-3">
                                 <select name="" id="" wire:model='orderBy' class="form-control">
@@ -55,10 +55,16 @@
                                 </button>
                                 {{-- @endif --}}
                                 {{-- @if ($loggedUser && $loggedUser->can('option_group.create')) --}}
-                                <a href="{{ route('users.create') }}" class="btn btn-xs btn-outline-primary float-end"
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-sm btn-outline-primary float-end me-1"
+                                    data-bs-toggle="modal" data-bs-target="#addPaymentDeduction"
+                                    wire:click="resetInputFields()">
+                                    <i class="fa-solid fa-plus"></i> Create New
+                                </button>
+                                {{-- <a href="{{ route('users.create') }}" class="btn btn-xs btn-outline-primary float-end"
                                     name="create_new" type="button">
                                     <i class="fa-solid fa-plus"></i> Create New
-                                </a>
+                                </a> --}}
                                 {{-- @endif --}}
                             </div>
                         </div>
@@ -114,8 +120,9 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                    <div class="card-footer" wire:key="$option_groups->id">
                         {{ $option_groups->links() }}
-
                     </div>
                 </div>
                 @include('livewire.option-group.create')

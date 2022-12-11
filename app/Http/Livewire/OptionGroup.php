@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Option_group;
+use Livewire\WithPagination;
 
 class OptionGroup extends Component
 {
@@ -12,16 +13,17 @@ class OptionGroup extends Component
     public $searchTerm;
     public $pazeSize;
     public $orderBy;
-    public $sortBy; 
-    public $ids;   
+    public $sortBy;
+    public $ids;
     public $export;
+    use WithPagination;
     public function render()
     {
-       
+
         $searchTerm = '%' . $this->searchTerm . '%';
         $query = Option_group::select(
             'option_groups.*'
-        );      
+        );
 
         if ($searchTerm != null) {
             $query->where(function ($query) use ($searchTerm) {
@@ -46,12 +48,17 @@ class OptionGroup extends Component
         if ($this->pazeSize != null) {
             $paze_size = $this->pazeSize;
         } else {
-            $paze_size = 5;
+            $paze_size = 7;
         }
         $option_groups = $query->paginate($paze_size);
         return view('livewire.option-group.index', [
             'columns' => Schema::getColumnListing('option_groups'),
             'option_groups' => $option_groups
         ]);
+    }
+    public function resetInputFields()
+    {
+        $this->resetErrorBag();
+        $this->ids = '';
     }
 }

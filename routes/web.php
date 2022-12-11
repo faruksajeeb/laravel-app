@@ -6,6 +6,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
 use App\Http\Livewire\OptionGroup;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,8 +47,16 @@ Route::middleware('auth')->group(function () {
         Route::match(['get', 'put'],'cron-setting',[SettingController::class,'cronSetting'])->name('cron-setting');
     });   
     
-    Route::get('option-groups',OptionGroup::class); 
+    Route::get('option-groups',OptionGroup::class)->name('option-groups'); 
     Route::get('clear-permission-cache',[RoleController::class,'clearPermissionCache'])->name('clear-permission-cache');
 });
+// Route::get('/clear', function() {
+//     Artisan::call('cache:clear');
+//     Artisan::call('route:cache');
+//     Artisan::call('view:clear');
+//     Artisan::call('config:cache');
+//     return  "all cleared ...";
+
+// });
 
 require __DIR__.'/auth.php';
