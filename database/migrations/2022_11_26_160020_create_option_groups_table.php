@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('option_group_name')->unique();
             $table->tinyInteger('status')->default(1);
-            $table->integer('created_by');
-            $table->integer('updated_by');
+            $table->integer('created_by',5);
+            $table->integer('updated_by',5);
             $table->timestamps();
         });
     }

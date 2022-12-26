@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Exception;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
 class Webspice
@@ -164,11 +165,11 @@ class Webspice
 			$id = Crypt::decryptString($request->id);
 			$status = '';
 			$text = '';
-			if ($request->status == 7) {
-				$status = -7;
+			if ($request->status == 1) {
+				$status = -1;
 				$text = 'inactive';
-			} elseif ($request->status == -7) {
-				$status = 7;
+			} elseif ($request->status == -1) {
+				$status = 1;
 				$text = 'active';
 			}
 			$res = DB::table($request->table)->where('id', $id)->update([
@@ -187,18 +188,25 @@ class Webspice
 				'message' => 'SORRY! Status has not changed.'
 			];
 		}
-		if ($queryStatus['message'] == 'success') {
-			// log
-			$this->log('options', $id, $queryStatus['message']);
+		if ($queryStatus['status'] == 'success') {
+			# log
+			$this->log($request->table, $id, $queryStatus['message']);
 
-			// Update chace 
-			$cache = Redis::get($request->table);
+			# Update chace 
+			//  $cache = Redis::get($request->table);
+			// if (!isset($cache)) {
+			// 	$cache = DB::table($request->table)->get();
+			// 	Redis::set($request->table, json_encode($cache));
+			// 	$cache = Redis::get($request->table);
+			// }
+			 $cache = Cache::get($request->table);
+			
 			if (!isset($cache)) {
 				$cache = DB::table($request->table)->get();
-				Redis::set($request->table, json_encode($cache));
-				$cache = Redis::get($request->table);
+				Cache::set($request->table, json_encode($cache));
+				$cache = Cache::get($request->table);
 			}
-
+			
 			$cacheData = collect(json_decode($cache));
 			$data = $cacheData->where('id', $id)->first();
 			$data->status = $status;
@@ -206,7 +214,9 @@ class Webspice
 			$data->updated_at = Carbon::now("Asia/Dhaka");
 			$index = $cacheData->search($data);
 			$cacheData[$index] = $data;
-			Redis::set($request->table, json_encode($cacheData));
+			// Redis::set($request->table, json_encode($cacheData));
+			Cache::set($request->table, json_encode($cacheData));
+			//dd(Cache::get($request->table));
 		}
 
 		return response()->json($queryStatus);

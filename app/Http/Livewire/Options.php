@@ -4,18 +4,22 @@ namespace App\Http\Livewire;
 
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\OptionGroupExport;
+use App\Exports\OptionExport;
 use Livewire\Component;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Option_group;
+use App\Models\Option;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Livewire\WithPagination;
 
-class OptionGroup extends Component
+class Options extends Component
 {
+    public $tableName='options';
     public $flag = 0;
+
     public $searchTerm;
+    public $status;
     public $pazeSize;
     public $orderBy;
     public $sortBy;
@@ -54,32 +58,35 @@ class OptionGroup extends Component
     {
 
         $searchTerm = '%' . $this->searchTerm . '%';
-        $query = Option_group::select(
-            'option_groups.*'
+        $query = Option::select(
+            '*'
         );
 
         if ($searchTerm != null) {
             $query->where(function ($query) use ($searchTerm) {
-                $query->where('option_groups.option_group_name', 'LIKE', $searchTerm);
+                $query->where('option_group_name', 'LIKE', $searchTerm);
+                $query->orWhere('option_value', 'LIKE', $searchTerm);
+                $query->orWhere('option_value2', 'LIKE', $searchTerm);
+                $query->orWhere('option_value3', 'LIKE', $searchTerm);
             });
         }
         // Sort By
         if (($this->orderBy != null) && ($this->sortBy != null)) {
-            $query->orderBy("option_groups." . $this->orderBy, $this->sortBy);
+            $query->orderBy($this->orderBy, $this->sortBy);
         } elseif (($this->orderBy != null) && ($this->sortBy == null)) {
-            $query->orderBy("option_groups." . $this->orderBy, "DESC");
+            $query->orderBy($this->orderBy, "DESC");
         } elseif (($this->orderBy == null) && ($this->sortBy != null)) {
-            $query->orderBy("option_groups.id", $this->sortBy);
+            $query->orderBy("id", $this->sortBy);
         } else {
-            $query->orderBy("option_groups.id", "DESC");
+            $query->orderBy("id", "DESC");
         }
 
         if ($export == 'excelExport') {
-            return Excel::download(new OptionGroupExport($query->get()), 'option_group_data_' . time() . '.xlsx');
+            return Excel::download(new OptionExport($query->get()), 'option_data_' . time() . '.xlsx');
         }
         // if($export=='pdfExport'){
         //     # Generate PDF  
-        //     $data['option_groups'] = $query->get();          
+        //     $data['option'] = $query->get();          
         //     $pdf = PDF::loadView('livewire.option-group.table',$data);
         //     $pdf->set_paper('letter', 'landscape');
         //     return $pdf->download('option-groups-' . time() . '.pdf');
@@ -90,10 +97,11 @@ class OptionGroup extends Component
         } else {
             $paze_size = 7;
         }
-        $option_groups = $query->paginate($paze_size);
-        return view('livewire.option-group.index', [
-            'columns' => Schema::getColumnListing('option_groups'),
-            'option_groups' => $option_groups
+        $options = $query->paginate($paze_size);
+        return view('livewire.option.index', [
+            'columns' => Schema::getColumnListing($this->tableName),
+            'option_groups' => DB::table('option_groups')->select('*')->where('status',1)->get(),
+            'options' => $options
         ]);
     }
     public function store()
@@ -101,12 +109,12 @@ class OptionGroup extends Component
 
         # Validate form data
         $validator = $this->validate([
-            'option_group_name' => 'required|unique:option_groups,option_group_name|min:3|max:100'
+            'option_group_name' => 'required|unique:option,option_group_name|min:3|max:100'
         ]);
         try {
             # Save form data
             $this->flag = 1;
-            $optionGroup = new Option_group();
+            $optionGroup = new Option();
             $optionGroup->option_group_name = $this->option_group_name;
             $optionGroup->created_by = Auth::user()->id;
             $optionGroup->save();
@@ -127,7 +135,7 @@ class OptionGroup extends Component
     {
         $this->resetInputFields();
         $id = Crypt::decryptString($id);
-        $data = Option_group::find($id);
+        $data = Option::find($id);
         $this->ids = $data->id;
         $this->option_group_name = $data->option_group_name;
     }
@@ -135,11 +143,11 @@ class OptionGroup extends Component
     {
         # Validate form data
         $validator = $this->validate([
-            'option_group_name' => 'min:3|max:100|required|unique:option_groups,option_group_name,'.$this->ids,
+            'option_group_name' => 'min:3|max:100|required|unique:option,option_group_name,'.$this->ids,
         ]);
         try {
             $this->flag = 1;
-            $data = Option_group::find($this->ids);
+            $data = Option::find($this->ids);
             $data->update([
                 'option_group_name' => $this->option_group_name,
                 'updated_by' => Auth::user()->id
@@ -155,7 +163,7 @@ class OptionGroup extends Component
     }
     public function destroy($id){
         $id = Crypt::decryptString($id);
-        Option_group::where('id',$id)->delete();
+        Option::where('id',$id)->delete();
         $this->emit('success','deleted');
     }
     public function resetInputFields()

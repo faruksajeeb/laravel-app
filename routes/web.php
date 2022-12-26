@@ -1,13 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
+use App\lib\Webspice;
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SettingController;
 use App\Http\Livewire\OptionGroup;
-use Illuminate\Support\Facades\Artisan;
-
+use App\Http\Livewire\Options;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,6 +26,7 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth')->group(function () {
+    Route::get('active-inactive', [Webspice::class, 'activeInactive'])->name('active.inactive');
     Route::get('/dashboard',[DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
     Route::any('change-password',[UserController::class,'changePassword'])->name('change-password');
     Route::get('user-profile',[UserController::class,'userProfile'])->name('user-profile');
@@ -48,15 +51,18 @@ Route::middleware('auth')->group(function () {
     });   
     
     Route::get('option-groups',OptionGroup::class)->name('option-groups'); 
+    Route::get('options',Options::class)->name('options'); 
+    
     Route::get('clear-permission-cache',[RoleController::class,'clearPermissionCache'])->name('clear-permission-cache');
 });
-// Route::get('/clear', function() {
-//     Artisan::call('cache:clear');
-//     Artisan::call('route:cache');
-//     Artisan::call('view:clear');
-//     Artisan::call('config:cache');
-//     return  "all cleared ...";
+Route::get('/clear', function() {
+    Artisan::call('cache:clear');
+    Artisan::call('route:cache');
+    Artisan::call('view:clear');
+    Artisan::call('config:cache');
+    return  "all cleared ...";
 
-// });
+});
+
 
 require __DIR__.'/auth.php';

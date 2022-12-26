@@ -32,7 +32,7 @@
                                             class="fa-solid fa-table"></i> Option Groups</span></a>
                             </li>
                             <li class="{{ Route::is('users.create') ? 'active' : '' }}">
-                                <a href="{{ url('users/create') }}" class="nav-link px-2"> <span class="d-sm-inline"><i
+                                <a href="{{ url('options') }}" class="nav-link px-2"> <span class="d-sm-inline"><i
                                             class="fa-solid fa-table"></i> Options</span></a>
                             </li>
                         </ul>

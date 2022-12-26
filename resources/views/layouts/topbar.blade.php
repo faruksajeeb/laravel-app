@@ -18,6 +18,7 @@
 
             <span class="d-none d-sm-inline mx-1">{{ Auth::user()->name }}</span>
         </a>
+        <a href="{{ url('clear')}}">clear all</a>
         <ul class="dropdown-menu dropdown-menu-light text-small shadow" aria-labelledby="dropdownUser1">
             @can('change.password')
             <li><a class="dropdown-item" href="{{ route('change-password') }}">Change Password</a></li>

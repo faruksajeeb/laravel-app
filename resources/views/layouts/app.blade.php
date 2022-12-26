@@ -13,7 +13,8 @@
 
     <!-- Fonts -->
     <link rel="stylesheet" href="https://fonts.bunny.net/css2?family=Nunito:wght@400;600;700&display=swap">
-
+    <script src="{{ asset('sweetalert2/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('sweetalert2/sweetalert2.min.css') }}">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -36,22 +37,20 @@
             background-color: rgba(0, 123, 255, .15);
             border: 1px solid rgba(255, 255, 255, 1);
         }
-        .pagination > li > a:focus,
-.pagination > li > a:hover,
-.pagination > li > span:focus,
-.pagination > li > span:hover {
-    z-index: 3;
-    color: #23527c;
-    background-color: purple;
-    border-color: #ddd;
-}
 
-
-
+        .pagination>li>a:focus,
+        .pagination>li>a:hover,
+        .pagination>li>span:focus,
+        .pagination>li>span:hover {
+            z-index: 3;
+            color: #23527c;
+            background-color: purple;
+            border-color: #ddd;
+        }
     </style>
-   
+
     @stack('styles')
-    
+
     @livewireStyles
 </head>
 
@@ -119,10 +118,89 @@
             navigation.classList.toggle('active');
             main.classList.toggle('active');
         }
+        $(document).on('click', ".active_inactive_btn", function() {
+            // var status;
+            // if ($(this).is(':checked')) {
+            //     alert('checked');
+            //     status = 7;                    
+            // }else{
+            //     status = -7;                   
+            // }  
+
+            var id = $(this).val();
+            var status = $(this).attr('status');
+            var field_id = $(this).attr('id');
+            $.ajax({
+                type: "GET",
+                url: "{{ route('active.inactive') }}",
+                dataType: "json",
+                data: {
+                    id: id,
+                    status: $(this).attr('status'),
+                    table: $(this).attr('table')
+                },
+                success: function(response) {
+                    if (response.status == 'success') {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: response.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        $("#" + field_id).attr('status', response.changed_value);
+                        if (response.changed_value == -7) {
+                            $('#edit_btn_' + field_id).prop('disabled', true);
+                        } else if (response.changed_value == 7) {
+                            $('#edit_btn_' + field_id).prop('disabled', false);
+                        }
+                    } else if (response.status == 'not_success') {
+                        var $checkbox = $("#" + field_id);
+                        ($checkbox.prop("checked") == true) ? $checkbox.prop("checked", false):
+                            $checkbox.prop("checked", true);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: response.message,
+                        });
+                        return false;
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // handle error
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: error,
+                    });
+                    return false;
+                }
+            })
+
+        });
     </script>
- 
+
     @stack('scripts')
+
     @livewireScripts
+    <script>
+       
+        Livewire.on('success', message => {
+            $(".modal").modal('hide');
+            Swal.fire(
+                'Success!',
+                'Data ' + message + ' successfully!',
+                'success'
+            )
+        })
+        Livewire.on('error', message => {
+            Swal.fire(
+                'Error!',
+                message,
+                'error'
+            )
+        })
+    </script>
 </body>
 
 </html>
