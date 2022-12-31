@@ -2,9 +2,9 @@
     Options
 </x-slot>
 
-<div>    
+<div>
     <section>
-            
+
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -30,7 +30,7 @@
                                 {{-- @if ($loggedUser && $loggedUser->can('option_group.create')) --}}
                                 <!-- Button trigger modal -->
                                 <button type="button" class="btn btn-sm btn-outline-primary float-end me-1"
-                                    data-bs-toggle="modal" data-bs-target="#addPaymentDeduction"
+                                    data-bs-toggle="modal" data-bs-target="#addModal"
                                     wire:click="resetInputFields()">
                                     <i class="fa-solid fa-plus"></i> Create New
                                 </button>
@@ -40,7 +40,7 @@
                                 </a> --}}
                                 {{-- @endif --}}
                             </div>
-                           
+
                         </div>
                     </div>
                     <div class="card-body py-1">
@@ -60,13 +60,19 @@
                                 </select>
                             </div>
                             <div class="col-md-3">
-                                <select name="" id="" wire:model='orderBy' class="form-control">
-                                    <option value="">--Option Group--</option>
-                                    @foreach ($option_groups as $val)
-                                        <option value="{{ $val->option_group_name }}">{{ $val->option_group_name }}</option>
-                                    @endforeach
-
-                                </select>
+                                <div wire:ignore>
+                                    <select name="option_group_name" id="option_group_name"
+                                        wire:model='option_group_name' class="form-control select2">
+                                        <option value="">--Option Group--</option>
+                                        @foreach ($option_groups as $val)
+                                            <option value="{{ $val->option_group_name }}">{{ $val->option_group_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div>
+                                    You have selected: <strong>{{ $option_group_name }}</strong>
+                                </div>
                             </div>
                             <div class="col-md-2">
                                 <select name="" id="" wire:model='orderBy' class="form-control">
@@ -83,7 +89,7 @@
                                     <option value="ASC">Ascending</option>
                                 </select>
                             </div>
-                            
+
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -97,7 +103,7 @@
                                 </select>
                                 Current Page {{ $options->currentPage() }}
                             </div>
-                        </div>                       
+                        </div>
 
                         <table class="table table-striped table-brodered table-sm">
                             <thead>
@@ -124,9 +130,8 @@
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input active_inactive_btn "
-                                                    status="{{ $val->status }}"
-                                                    {{ $val->status == -1 ? '' : '' }} table="options"
-                                                    type="checkbox" id="row_{{ $val->id }}"
+                                                    status="{{ $val->status }}" {{ $val->status == -1 ? '' : '' }}
+                                                    table="options" type="checkbox" id="row_{{ $val->id }}"
                                                     value="{{ Crypt::encryptString($val->id) }}"
                                                     {{ $val->status == 1 ? 'checked' : '' }} style="cursor:pointer">
                                             </div>
@@ -137,15 +142,14 @@
                                             <button class="btn btn-sm btn-success me-1 py-1 mt-1 "
                                                 wire:click.prevent="edit('{{ Crypt::encryptString($val->id) }}')"
                                                 data-bs-toggle="modal" {{-- wire:click.prevent="edit({{ '553453453453454535SDD' }})" data-bs-toggle="modal" --}} {{-- wire:click.prevent="edit({{$val->id}})" data-bs-toggle="modal" --}}
-                                                data-bs-target="#editModel" title="Edit"><i
+                                                data-bs-target="#editModal" title="Edit"><i
                                                     class="fa-solid fa-file-pen"></i></button>
 
                                             <button class="btn btn-sm btn-danger py-1 mt-1 del_btn"
-                                            
                                                 {{-- wire:click.prevent="$emit('triggerDelete',{{ $val->id }})" --}}
                                                 wire:click.prevent="$emit('triggerDelete','{{ Crypt::encryptString($val->id) }}')"
-                                                {{-- wire:click.prevent="destroy('{{ Crypt::encryptString($val->id) }}')" --}}
-                                                title="Delete"><i class="fa-solid fa-trash-can"></i></button>
+                                                {{-- wire:click.prevent="destroy('{{ Crypt::encryptString($val->id) }}')" --}} title="Delete"><i
+                                                    class="fa-solid fa-trash-can"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -176,41 +180,49 @@
 
                     </div>
                 </div>
-                @include('livewire.option-group.create')
-                @include('livewire.option-group.edit')
+                @include('livewire.option.create')
+                @include('livewire.option.edit')
             </div>
         </div>
     </section>
 </div>
 @push('scripts')
-<script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function () {
-
-        @this.on('triggerDelete', deleteId => {
-            Swal.fire({
-                title: 'Are You Sure?',
-                text: 'This record will be deleted!',
-                type: "warning",
-                showCancelButton: true,
-                // confirmButtonColor: 'var(--success)',
-                // cancelButtonColor: 'var(--primary)',
-                confirmButtonText: 'Delete!'
-            }).then((result) => {
-		//if user clicks on delete
-                if (result.value) {
-		            // calling destroy method to delete
-                    @this.call('destroy',deleteId)
-		            // success response
-                    //responseAlert({title: session('message'), type: 'success'});
-                    
-                } else {
-                    Swal.fire({
-                        title: 'Operation Cancelled!',
-                        type: 'success'
-                    });
-                }
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#option_group_name').select2();
+            $('#option_group_name').on('change', function(e) {
+                var data = $('#option_group_name').select2("val");
+                Livewire.emit('listenerReferenceHere',data);               
+                @this.set('option_group_name', data);
             });
         });
-    })
-</script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            @this.on('triggerDelete', deleteId => {
+                Swal.fire({
+                    title: 'Are You Sure?',
+                    text: 'This record will be deleted!',
+                    type: "warning",
+                    showCancelButton: true,
+                    // confirmButtonColor: 'var(--success)',
+                    // cancelButtonColor: 'var(--primary)',
+                    confirmButtonText: 'Delete!'
+                }).then((result) => {
+                    //if user clicks on delete
+                    if (result.value) {
+                        // calling destroy method to delete
+                        @this.call('destroy', deleteId)
+                        // success response
+                        //responseAlert({title: session('message'), type: 'success'});
+
+                    } else {
+                        Swal.fire({
+                            title: 'Operation Cancelled!',
+                            type: 'success'
+                        });
+                    }
+                });
+            });
+        })
+    </script>
 @endpush

@@ -8,6 +8,8 @@ use App\Exports\OptionExport;
 use Livewire\Component;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Option;
+// use Illuminate\Contracts\Validation\Rule;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -25,8 +27,13 @@ class Options extends Component
     public $sortBy;
     /*field name*/
     public $ids;
+    public $edit_option_group;
+    public $option_group;
     public $option_group_name;
-
+    public $option_value;
+    public $option_value2;
+    public $option_value3;
+    // public $selected = '';
     public $export;
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
@@ -70,7 +77,15 @@ class Options extends Component
                 $query->orWhere('option_value3', 'LIKE', $searchTerm);
             });
         }
-        // Sort By
+        # By Option Group 
+        if ($this->option_group_name != null) {
+            $query->where('option_group_name',$this->option_group_name);
+        }
+        # By status
+        if ($this->status != null) {
+            $query->where('status',$this->status);
+        }
+        # Sort By
         if (($this->orderBy != null) && ($this->sortBy != null)) {
             $query->orderBy($this->orderBy, $this->sortBy);
         } elseif (($this->orderBy != null) && ($this->sortBy == null)) {
@@ -109,21 +124,31 @@ class Options extends Component
 
         # Validate form data
         $validator = $this->validate([
-            'option_group_name' => 'required|unique:option,option_group_name|min:3|max:100'
+            'option_group' => 'required',
+            'option_value' =>  [
+                'required',
+                Rule::unique('options')->ignore($this->ids, 'id')->where(function ($query) {
+                    return $query->where('option_group', $this->option_group)
+                        ->where('option_value', $this->option_value);
+                })
+            ],
         ]);
         try {
             # Save form data
             $this->flag = 1;
-            $optionGroup = new Option();
-            $optionGroup->option_group_name = $this->option_group_name;
-            $optionGroup->created_by = Auth::user()->id;
-            $optionGroup->save();
+            $option = new Option();
+            $option->option_group_name = $this->option_group;
+            $option->option_value = $this->option_value;
+            $option->option_value2 = $this->option_value2;
+            $option->option_value3 = $this->option_value3;
+            $option->created_by = Auth::user()->id;
+            $option->save();
 
-            if ($optionGroup->id) {
+            if ($option->id) {
 
                 # Reset form
                 $this->resetInputFields();
-                $this->emit('added', 'inserted');
+                $this->emit('success', 'inserted');
             }
         } catch (\Exception $e) {
             $this->emit('error', $e->getMessage());
@@ -137,19 +162,32 @@ class Options extends Component
         $id = Crypt::decryptString($id);
         $data = Option::find($id);
         $this->ids = $data->id;
-        $this->option_group_name = $data->option_group_name;
+        $this->option_group = $data->option_group_name;
+        $this->option_value = $data->option_value;
+        $this->option_value2 = $data->option_value2;
+        $this->option_value3 = $data->option_value3;
     }
     public function update()
     {
         # Validate form data
         $validator = $this->validate([
-            'option_group_name' => 'min:3|max:100|required|unique:option,option_group_name,'.$this->ids,
+            'option_group' => 'required',
+            'option_value' =>  [
+                'required',
+                Rule::unique('options')->where(function ($query) {
+                    return $query->where('option_group_name', $this->edit_option_group)
+                        ->where('option_value', $this->option_value);
+                })
+            ],
         ]);
         try {
             $this->flag = 1;
             $data = Option::find($this->ids);
             $data->update([
-                'option_group_name' => $this->option_group_name,
+                'option_group_name' => $this->edit_option_group,
+                'option_value' => $this->option_value,
+                'option_value2' => $this->option_value2,
+                'option_value3' => $this->option_value3,
                 'updated_by' => Auth::user()->id
             ]);
             # reset form
@@ -170,6 +208,9 @@ class Options extends Component
     {
         $this->resetErrorBag();
         $this->ids = '';
-        $this->option_group_name = '';
+        $this->option_group = '';
+        $this->option_value = '';
+        $this->option_value2 = '';
+        $this->option_value3 = '';
     }
 }
