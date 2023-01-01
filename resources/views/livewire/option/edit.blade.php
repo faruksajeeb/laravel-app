@@ -45,9 +45,9 @@
                     <div class="form-group row">
                         <label for="option-group" class="form-label">Option Value:</label>
                         <div class="col-12">
-                            <input type="text" name="edit_option_value" id="edit_option_value" wire:model="edit_option_value"
+                            <input type="text" name="option_value" id="option_value" wire:model="option_value"
                                 class="form-control form-control-lg option_group_name" placeholder="Enter Option Value">
-                            @error('edit_option_value')
+                            @error('option_value')
                                 <span class="error text-danger">{{ $message }}</span>
                             @enderror
                         </div>
@@ -90,6 +90,20 @@
 </div>
 @push('scripts')
     <script>
-
-</script>
+$(document).ready(function() {
+          //  $("#option_group").select2({ dropdownParent: "#addModal" });
+          $('#editModal').on('shown.bs.modal', function (e) {
+            $('#option_group').select2({
+            placeholder: 'Select an option group',
+            dropdownParent:$('#option_group').parent(),
+            });
+            $('#option_group').on('change', function(e) {
+                var data = $(this).val();
+                Livewire.emit('listenerReferenceHere',data);               
+                @this.set('option_group', data);
+                // $('#option_group').select2();
+            });
+        });
+});
+    </script>
 @endpush

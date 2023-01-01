@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OptionExport;
+use App\Lib\Webspice;
 use Livewire\Component;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Option;
@@ -14,10 +15,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Livewire\WithPagination;
+use Illuminate\Support\Facades\Cache;
 
 class Options extends Component
 {
-    public $tableName='options';
+    public $tableName = 'options';
     public $flag = 0;
 
     public $searchTerm;
@@ -41,14 +43,7 @@ class Options extends Component
     {
         $this->resetPage();
     }
-    public function updatedsearchMonth()
-    {
-        $this->resetPage();
-    }
-    public function updatedsearchYear()
-    {
-        $this->resetPage();
-    }
+
     public function updatedorderBy()
     {
         $this->resetPage();
@@ -79,11 +74,11 @@ class Options extends Component
         }
         # By Option Group 
         if ($this->option_group_name != null) {
-            $query->where('option_group_name',$this->option_group_name);
+            $query->where('option_group_name', $this->option_group_name);
         }
         # By status
         if ($this->status != null) {
-            $query->where('status',$this->status);
+            $query->where('status', $this->status);
         }
         # Sort By
         if (($this->orderBy != null) && ($this->sortBy != null)) {
@@ -115,7 +110,7 @@ class Options extends Component
         $options = $query->paginate($paze_size);
         return view('livewire.option.index', [
             'columns' => Schema::getColumnListing($this->tableName),
-            'option_groups' => DB::table('option_groups')->select('*')->where('status',1)->get(),
+            'option_groups' => DB::table('option_groups')->select('*')->where('status', 1)->get(),
             'options' => $options
         ]);
     }
@@ -128,7 +123,7 @@ class Options extends Component
             'option_value' =>  [
                 'required',
                 Rule::unique('options')->ignore($this->ids, 'id')->where(function ($query) {
-                    return $query->where('option_group', $this->option_group)
+                    return $query->where('option_group_name', $this->option_group)
                         ->where('option_value', $this->option_value);
                 })
             ],
@@ -145,9 +140,12 @@ class Options extends Component
             $option->save();
 
             if ($option->id) {
-
                 # Reset form
                 $this->resetInputFields();
+                # Write Log
+                Webspice::log($this->table, $this->ids, 'INSERT');
+                # Cache Update
+                Cache::forget($this->table);
                 $this->emit('success', 'inserted');
             }
         } catch (\Exception $e) {
@@ -175,7 +173,7 @@ class Options extends Component
             'option_value' =>  [
                 'required',
                 Rule::unique('options')->where(function ($query) {
-                    return $query->where('option_group_name', $this->edit_option_group)
+                    return $query->where('option_group_name', $this->option_group)
                         ->where('option_value', $this->option_value);
                 })
             ],
@@ -184,25 +182,41 @@ class Options extends Component
             $this->flag = 1;
             $data = Option::find($this->ids);
             $data->update([
-                'option_group_name' => $this->edit_option_group,
+                'option_group_name' => $this->option_group,
                 'option_value' => $this->option_value,
                 'option_value2' => $this->option_value2,
                 'option_value3' => $this->option_value3,
                 'updated_by' => Auth::user()->id
             ]);
+            # Write Log
+            Webspice::log($this->table, $this->ids, 'UPDATE');
+            # Cache Update
+            Cache::forget($this->table);
             # reset form
             $this->resetInputFields();
+            # Return Message
             $this->emit('success', 'updated');
         } catch (\Exception $e) {
+            # Return Message
             $this->emit('error', $e->getMessage());
         }
 
         $this->flag = 0;
     }
-    public function destroy($id){
-        $id = Crypt::decryptString($id);
-        Option::where('id',$id)->delete();
-        $this->emit('success','deleted');
+    public function destroy($id)
+    {
+        try {
+            $id = Crypt::decryptString($id);
+            Option::where('id', $id)->delete();
+            # Write Log
+            Webspice::log($this->table, $id, 'DELETE');
+            # Cache Update
+            Cache::forget($this->table);
+            # Success message
+            $this->emit('success', 'deleted');
+        } catch (\Exception $e) {
+            $this->emit('error', $e->getMessage());
+        }
     }
     public function resetInputFields()
     {

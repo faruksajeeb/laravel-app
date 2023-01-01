@@ -22,9 +22,9 @@ class OptionExport implements FromArray, WithHeadings, Responsable, ShouldAutoSi
     public function styles(Worksheet $sheet)
     {
         // $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'Option Group List');
+        $sheet->setCellValue('A1', 'Option List');
         $sheet->getStyle('A1')->getFont()->setBold(true);
-        $sheet->mergeCells('A1:F2');
+        $sheet->mergeCells('A1:I2');
         $styleArray = [
             'font' => [
                 'bold' => true,
@@ -53,12 +53,12 @@ class OptionExport implements FromArray, WithHeadings, Responsable, ShouldAutoSi
                 ],
             ],
         ];
-        $sheet->getStyle('A1:F1')->applyFromArray($styleArray);
+        $sheet->getStyle('A1:I1')->applyFromArray($styleArray);
         $headerStyleArray = [
             'font' => [
                 'bold' => true,
             ]];
-        $sheet->getStyle('A3:F3')->applyFromArray($headerStyleArray);
+        $sheet->getStyle('A3:I3')->applyFromArray($headerStyleArray);
     }
     public function headings(): array
     {
@@ -66,6 +66,9 @@ class OptionExport implements FromArray, WithHeadings, Responsable, ShouldAutoSi
             [
                 "Sl No",
                 "Option Group Name",
+                "Option Value",
+                "Option Value2",
+                "Option Value3",
                 "Created At",
                 "Updated At",
                 "Created By",
@@ -84,6 +87,9 @@ class OptionExport implements FromArray, WithHeadings, Responsable, ShouldAutoSi
             $customArray[] = array(
                 $k+1,
                 str_replace('_',' ',$val['option_group_name']),
+                $val['option_value'],
+                $val['option_value2'],
+                $val['option_value3'],
                 $val['created_at'],
                 $val['updated_at'],
                 $val['created_by'],

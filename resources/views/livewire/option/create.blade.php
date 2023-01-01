@@ -102,9 +102,10 @@
             dropdownParent:$('#option_group').parent(),
             });
             $('#option_group').on('change', function(e) {
-                var data = $('#option_group').select2("val");
+                var data = $(this).val();
                 Livewire.emit('listenerReferenceHere',data);               
                 @this.set('option_group', data);
+                // $('#option_group').select2();
             });
         });
 });

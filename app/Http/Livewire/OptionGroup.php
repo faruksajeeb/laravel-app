@@ -5,15 +5,19 @@ namespace App\Http\Livewire;
 use PDF;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\OptionGroupExport;
+use App\Lib\Webspice;
 use Livewire\Component;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Option_group;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Livewire\WithPagination;
 
 class OptionGroup extends Component
 {
+    public $table = 'option_groups';
     public $flag = 0;
     public $searchTerm;
     public $pazeSize;
@@ -112,9 +116,26 @@ class OptionGroup extends Component
             $optionGroup->save();
 
             if ($optionGroup->id) {
-
                 # Reset form
                 $this->resetInputFields();
+                # Write Log
+                Webspice::log($this->table, $optionGroup->id, 'INSERTED');
+                # Update Cache
+                //  $cache = Redis::get($request->table);
+                // if (!isset($cache)) {
+                // 	$cache = DB::table($request->table)->get();
+                // 	Redis::set($request->table, json_encode($cache));
+                // 	$cache = Redis::get($request->table);
+                // }
+                // $cache = Cache::get($this->table);
+
+                // if (!isset($cache)) {
+                //     $cache = DB::table($this->table)->get();
+                //     Cache::set($this->table, json_encode($cache));
+                //     $cache = Cache::get($this->table);
+                // }
+                Cache::forget($this->table);
+                # Return Message
                 $this->emit('added', 'inserted');
             }
         } catch (\Exception $e) {
@@ -135,7 +156,7 @@ class OptionGroup extends Component
     {
         # Validate form data
         $validator = $this->validate([
-            'option_group_name' => 'min:3|max:100|required|unique:option_groups,option_group_name,'.$this->ids,
+            'option_group_name' => 'min:3|max:100|required|unique:option_groups,option_group_name,' . $this->ids,
         ]);
         try {
             $this->flag = 1;
@@ -144,8 +165,12 @@ class OptionGroup extends Component
                 'option_group_name' => $this->option_group_name,
                 'updated_by' => Auth::user()->id
             ]);
+            # Write Log
+            Webspice::log($this->table, $this->ids, 'UPDATE');
             # reset form
             $this->resetInputFields();
+            # Cache Update
+            Cache::forget($this->table);
             $this->emit('success', 'updated');
         } catch (\Exception $e) {
             $this->emit('error', $e->getMessage());
@@ -153,10 +178,21 @@ class OptionGroup extends Component
 
         $this->flag = 0;
     }
-    public function destroy($id){
-        $id = Crypt::decryptString($id);
-        Option_group::where('id',$id)->delete();
-        $this->emit('success','deleted');
+    public function destroy($id)
+    {
+        try {
+            $id = Crypt::decryptString($id);
+            Option_group::where('id', $id)->delete();
+
+            # Write Log
+            Webspice::log($this->table, $id, 'DELETE');
+            # Cache Update
+            Cache::forget($this->table);
+            # Success message
+            $this->emit('success', 'deleted');
+        } catch (\Exception $e) {
+            $this->emit('error', $e->getMessage());
+        }
     }
     public function resetInputFields()
     {
